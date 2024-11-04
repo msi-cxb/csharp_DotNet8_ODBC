@@ -1,0 +1,37 @@
+name: CI
+on:
+  push:
+    branches: [ main, develop, release/*, hotfix/* ]
+  pull_request:
+    branches: [ main, develop, release/*, hotfix/* ]
+    
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  
+jobs:
+  run-selected-unittests:
+    runs-on: windows-latest
+    env:
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+    name: Run MSBuild and VSTest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        id: checkout_code
+            
+      - name: Setup MSBuild and add to PATH
+        uses: microsoft/setup-msbuild@v2
+        id: setup_msbuild
+              
+      - name: Run MSBuild
+        id: run_msbuild
+        run: |
+          msbuild .\csharp_DotNet8_ODBC.sln  /t:clean,build -restore /p:Configuration=Debug
+
+      - name: Run the executable
+        id: run_executable
+        shell: powershell
+        run: |
+          .\bin\Debug\net8.0\csharp_DotNet8_ODBC.exe
+          exit $LASTEXITCODE
