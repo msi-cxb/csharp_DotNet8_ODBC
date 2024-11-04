@@ -27,9 +27,6 @@ namespace csharpOdbcExample
                     {
                         o.connection.Open();
 
-                        query = @"select crap";
-                        rtn = o.Execute(query, true);
-
                         query = @"drop table if exists company";
                         rtn = o.Execute(query, false);
 
