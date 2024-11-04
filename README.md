@@ -13,7 +13,10 @@ This provides an example of a .NET8 project that uses `Microsoft.Windows.Compati
 Without `Microsoft.Windows.Compatibility` you will get an error in Visual Studio 2022 like this:
 
 ```
-1>G:\csharp_DotNet8_ODBC\Program.cs(107,16,107,30): error CS1069: The type name 'OdbcConnection' could not be found in the namespace 'System.Data.Odbc'. This type has been forwarded to assembly 'System.Data.Odbc, Version=0.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51' Consider adding a reference to that assembly.
+1>G:\csharp_DotNet8_ODBC\Program.cs(107,16,107,30): error CS1069: The type name 'OdbcConnection'
+could not be found in the namespace 'System.Data.Odbc'. This type has been forwarded to assembly
+'System.Data.Odbc, Version=0.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51'
+Consider adding a reference to that assembly.
 ```
 
 
