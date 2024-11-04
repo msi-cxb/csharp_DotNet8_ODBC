@@ -1,5 +1,7 @@
 # csharp_DotNet8_ODBC
 
+[![CI](https://github.com/msi-cxb/csharp_DotNet8_ODBC/actions/workflows/CI.yml/badge.svg)](https://github.com/msi-cxb/csharp_DotNet8_ODBC/actions/workflows/CI.yml)
+
 Problem: ODBC is not included in .NET Core. 
 
 Solution: Use NuGet Package Manager to install `Microsoft.Windows.Compatibility`.
