@@ -27,6 +27,9 @@ namespace csharpOdbcExample
                     {
                         o.connection.Open();
 
+                        query = @"SELECT sqlite_version() as vers, sqlite_source_id() as srcId;";
+                        rtn = o.Execute(query, true);
+
                         query = @"drop table if exists company";
                         rtn = o.Execute(query, false);
 
