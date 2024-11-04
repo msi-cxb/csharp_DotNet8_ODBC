@@ -89,11 +89,11 @@ VALUES(6, 'Kim', 22, 'South-Hall', 45000.00);
             }
             finally
             {
-                if (System.Diagnostics.Debugger.IsAttached == false)
-                {
-                    Console.Write("press any key to continue...");
-                    Console.ReadKey();
-                }
+                //if (System.Diagnostics.Debugger.IsAttached == true)
+                //{
+                //    Console.Write("press any key to continue...");
+                //    Console.ReadKey();
+                //}
             }
             return 0;
         }
