@@ -22,9 +22,9 @@ jobs:
             
       - name: install ODBC
         id: install_odbc
+        shell: cmd
         run: |
-          cd sqliteODBC64
-          .\SQLiteODBCInstaller.exe -i -d=sql3
+          cd sqliteODBC64 && .\SQLiteODBCInstaller.exe -i -d=sql3
 
       - name: Setup MSBuild and add to PATH
         uses: microsoft/setup-msbuild@v2
