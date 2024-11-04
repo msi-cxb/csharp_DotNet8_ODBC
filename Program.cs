@@ -27,7 +27,10 @@ namespace csharpOdbcExample
                     {
                         o.connection.Open();
 
-                        query = @"drop table if exists company;";
+                        query = @"select crap";
+                        rtn = o.Execute(query, true);
+
+                        query = @"drop table if exists company";
                         rtn = o.Execute(query, false);
 
                         query = @"
@@ -184,7 +187,7 @@ VALUES(6, 'Kim', 22, 'South-Hall', 45000.00);
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("Exeception in Execute: " + ex.Message + "\n" + ex.StackTrace + "\n");
+                        Console.WriteLine("Exeception in ExecuteReader: " + ex.Message + "\n" + ex.StackTrace + "\n");
 
                         if (dataTable != null)
                         {
@@ -204,12 +207,22 @@ VALUES(6, 'Kim', 22, 'South-Hall', 45000.00);
                                 }
                             }
                         }
+
+                        System.Environment.Exit(-1);
                     }
                 }
                 else
                 {
-                    rtnCount = command.ExecuteNonQuery();
-                    Console.WriteLine($"ExecuteNonQuery returned {rtnCount}");
+                    try
+                    {
+                        rtnCount = command.ExecuteNonQuery();
+                        Console.WriteLine($"ExecuteNonQuery returned {rtnCount}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Exeception in ExecuteNonQuery: " + ex.Message + "\n" + ex.StackTrace + "\n");
+                        System.Environment.Exit(-1);
+                    }
                 }
             }
             catch (OdbcException ex)
@@ -220,15 +233,17 @@ VALUES(6, 'Kim', 22, 'South-Hall', 45000.00);
                     errors.AppendFormat("{0}\t(source: {1})", err.Message, err.Source);
                 }
                 Console.WriteLine("\nOdbcException: {0}\n", errors.ToString());
+                System.Environment.Exit(-1);
             }
             catch (OverflowException ex)
             {
                 Console.WriteLine("\nOverflowException: Message: " + ex.Message + "\nInnerException: " + ex.InnerException + "\nStackTrace: " + ex.StackTrace + "\n");
+                System.Environment.Exit(-1);
             }
             catch (Exception ex)
             {
                 Console.WriteLine("\nException: " + ex.Message + " " + ex.StackTrace + "\n");
-                throw;
+                System.Environment.Exit(-1);
             }
             return (rtnCount, string.Empty);
         }
