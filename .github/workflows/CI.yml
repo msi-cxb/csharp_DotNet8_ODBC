@@ -29,6 +29,11 @@ jobs:
         run: |
           msbuild .\csharp_DotNet8_ODBC.sln  /t:clean,build -restore /p:Configuration=Debug
 
+      - name: install ODBC
+        id: install_odbc
+        run: |
+          .\sqliteODBC64\SQLiteODBCInstaller.exe -i -d=sql3
+
       - name: Run the executable
         id: run_executable
         shell: powershell
