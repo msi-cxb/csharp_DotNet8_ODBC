@@ -8,6 +8,24 @@ Solution: Use NuGet Package Manager to install `Microsoft.Windows.Compatibility`
 
 ----
 
+## UPDATE 3 June 2025
+
+This project has been updated so that it can run one or more `.sql` files to test ODBC driver.  
+
+```
+usage: csharp_DotNet8_ODBC.exe [duckdb OR sqlite] [database folder] [database file] [sql file glob] [data folder]
+
+hint: use full path or relative path (e.g. '.\filename') for file names, file globbing using '*' supported for sql file path.
+```
+
+> [!NOTE]
+>
+> The sql files located in `.\sql\duckdb` are currently configured to be run with DuckDB. A folder `.\sql\sqlite3` is also provided for sqlite3 sql files.
+
+
+
+## About .NET Core and ODBC 
+
 This provides an example of a .NET8 project that uses `Microsoft.Windows.Compatibility` to provide ODBC compatibility that was removed in .NET Core (version > 4.X).
 
 Without `Microsoft.Windows.Compatibility` you will get an error in Visual Studio 2022 like this:
@@ -89,72 +107,5 @@ System.Windows.Extensions.8.0.0
 >
 > Running the exe built by this project requires an SQLiteODBC driver. An installer is provided so that the workflow can build and run the compiled app.
 
-Expected output:
 
-```
-starting... bHaveConnStr True
-state Open src [.\test.db] <-- driver=SQLite3 ODBC Driver;NoWCHAR=1;database=.\test.db;
-query drop table if exists company;
-ExecuteNonQuery returned 0
-state Open src [.\test.db] <-- driver=SQLite3 ODBC Driver;NoWCHAR=1;database=.\test.db;
-query
-CREATE TABLE COMPANY(
-    ID INT PRIMARY KEY     NOT NULL,
-    NAME           TEXT    NOT NULL,
-    AGE            INT     NOT NULL,
-    ADDRESS        CHAR(50),
-    SALARY         REAL
-);
-ExecuteNonQuery returned 0
-state Open src [.\test.db] <-- driver=SQLite3 ODBC Driver;NoWCHAR=1;database=.\test.db;
-query
-INSERT INTO COMPANY(ID, NAME, AGE, ADDRESS, SALARY)
-VALUES(1, 'Paul', 32, 'California', 20000.00);
-
-ExecuteNonQuery returned 1
-state Open src [.\test.db] <-- driver=SQLite3 ODBC Driver;NoWCHAR=1;database=.\test.db;
-query
-INSERT INTO COMPANY(ID, NAME, AGE, ADDRESS, SALARY)
-VALUES(2, 'Allen', 25, 'Texas', 15000.00);
-
-ExecuteNonQuery returned 1
-state Open src [.\test.db] <-- driver=SQLite3 ODBC Driver;NoWCHAR=1;database=.\test.db;
-query
-INSERT INTO COMPANY(ID, NAME, AGE, ADDRESS, SALARY)
-VALUES(3, 'Teddy', 23, 'Norway', 20000.00);
-
-ExecuteNonQuery returned 1
-state Open src [.\test.db] <-- driver=SQLite3 ODBC Driver;NoWCHAR=1;database=.\test.db;
-query
-INSERT INTO COMPANY(ID, NAME, AGE, ADDRESS, SALARY)
-VALUES(4, 'Mark', 25, 'Rich-Mond ', 65000.00);
-
-ExecuteNonQuery returned 1
-state Open src [.\test.db] <-- driver=SQLite3 ODBC Driver;NoWCHAR=1;database=.\test.db;
-query
-INSERT INTO COMPANY(ID, NAME, AGE, ADDRESS, SALARY)
-VALUES(5, 'David', 27, 'Texas', 85000.00);
-
-ExecuteNonQuery returned 1
-state Open src [.\test.db] <-- driver=SQLite3 ODBC Driver;NoWCHAR=1;database=.\test.db;
-query
-INSERT INTO COMPANY(ID, NAME, AGE, ADDRESS, SALARY)
-VALUES(6, 'Kim', 22, 'South-Hall', 45000.00);
-
-ExecuteNonQuery returned 1
-state Open src [.\test.db] <-- driver=SQLite3 ODBC Driver;NoWCHAR=1;database=.\test.db;
-query select * from company;
-Reader Start       439 milliseconds
-    1 1,Paul,32,California,20000,
-    2 2,Allen,25,Texas,15000,
-    3 3,Teddy,23,Norway,20000,
-    4 4,Mark,25,Rich-Mond ,65000,
-    5 5,David,27,Texas,85000,
-    6 6,Kim,22,South-Hall,45000,
-Reader Finish       729 milliseconds  rowCnt 6
-
-G:\csharp_DotNet8_ODBC\bin\Debug\net8.0\csharp_DotNet8_ODBC.exe (process 12292) exited with code 0 (0x0).
-To automatically close the console when debugging stops, enable Tools->Options->Debugging->Automatically close the console when debugging stops.
-Press any key to close this window . . .
-```
 

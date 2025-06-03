@@ -396,3 +396,26 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/data/.DS_Store
+*.parquet
+*.csv
+*.zip
+*.fgb
+*.gz
+*.json
+*.db
+*.arrow
+*.cpg
+*.prj
+*.dbf
+*.shp
+*.shx
+*.sbn
+*.sbx
+*.xml
+*.geojson
+*.geojsonseq
+*.duckdb
+*.duckdb_extension
+*.info
+data/spatial/Makefile
