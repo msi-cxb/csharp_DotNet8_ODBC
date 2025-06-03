@@ -32,7 +32,7 @@ jobs:
         shell: cmd
         run: |
           cd duckdbODBC64
-          .\odbc_install.exe /Install
+          .\odbc_install.exe //CI //Install
 
       - name: Setup MSBuild and add to PATH
         uses: microsoft/setup-msbuild@v2
