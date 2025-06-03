@@ -387,9 +387,19 @@ namespace csharpOdbcExample
                         reader.Close();
                         stopwatch.Stop();
                     }
+                    catch (OdbcException ex)
+                    {
+                        StringBuilder errors = new StringBuilder();
+                        foreach (OdbcError err in ex.Errors)
+                        {
+                            errors.AppendFormat("{0}\t(source: {1})", err.Message, err.Source);
+                        }
+                        Console.WriteLine("\nExecuteQuery OdbcException: {0}\n", errors.ToString());
+                        // System.Environment.Exit(-1);
+                    }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("Exeception in ExecuteReader: " + ex.Message + "\n" + ex.StackTrace + "\n");
+                        Console.WriteLine("Exeception in executeQuery: " + ex.Message + "\n" + ex.StackTrace + "\n");
 
                         if (dataTable != null)
                         {
@@ -420,6 +430,16 @@ namespace csharpOdbcExample
                         rtnCount = command.ExecuteNonQuery();
                         if (timer) { Console.WriteLine($"TIMER: {ToPrettyFormat(stopwatch.Elapsed)} returned {rtnCount}"); }
                         stopwatch.Stop();
+                    }
+                    catch (OdbcException ex)
+                    {
+                        StringBuilder errors = new StringBuilder();
+                        foreach (OdbcError err in ex.Errors)
+                        {
+                            errors.AppendFormat("{0}\t(source: {1})", err.Message, err.Source);
+                        }
+                        Console.WriteLine("\nExecuteNonQuery OdbcException: {0}\n", errors.ToString());
+                        //System.Environment.Exit(-1);
                     }
                     catch (Exception ex)
                     {

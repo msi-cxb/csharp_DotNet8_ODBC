@@ -20,12 +20,19 @@ jobs:
         uses: actions/checkout@v4
         id: checkout_code
             
-      - name: install ODBC
-        id: install_odbc
+      - name: install SQLite ODBC
+        id: install_sqlite_odbc
         shell: cmd
         run: |
           cd sqliteODBC64
           .\SQLiteODBCInstaller.exe -q -i -d=sql3
+
+      - name: install DuckDB ODBC
+        id: install_duckdb_odbc
+        shell: cmd
+        run: |
+          cd duckdbODBC64
+          .\odbc_install.exe /Install
 
       - name: Setup MSBuild and add to PATH
         uses: microsoft/setup-msbuild@v2
@@ -34,11 +41,18 @@ jobs:
       - name: Run MSBuild
         id: run_msbuild
         run: |
-          msbuild .\csharp_DotNet8_ODBC.sln  /t:clean,build -restore /p:Configuration=Debug
+          msbuild .\csharp_DotNet8_ODBC.sln  /t:clean,build -restore /p:Configuration=Release
 
-      - name: Run the executable
+      - name: Run the executable with sqlite3 test
         id: run_executable
         shell: powershell
         run: |
-          .\bin\Debug\net8.0\csharp_DotNet8_ODBC.exe
-          exit $LASTEXITCODE
+          .\bin\Release\net8.0\csharp_DotNet8_ODBC.exe sqlite .\db .\db\test.sqlite3 .\sql\sqlite3\datetime.sql .\data
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+
+      - name: Run the executable with sqlite3 test
+        id: run_executable
+        shell: powershell
+        run: |
+          .\bin\Release\net8.0\csharp_DotNet8_ODBC.exe duckdb .\db .\db\test.duckdb .\sql\sqlite3\datetime.sql .\data
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
