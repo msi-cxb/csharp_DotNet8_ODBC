@@ -396,7 +396,6 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
-/data/.DS_Store
 *.parquet
 *.csv
 *.zip
@@ -419,3 +418,6 @@ FodyWeavers.xsd
 *.duckdb_extension
 *.info
 data/spatial/Makefile
+.DS_Store
+*.xlsx
+*.sqlite3
