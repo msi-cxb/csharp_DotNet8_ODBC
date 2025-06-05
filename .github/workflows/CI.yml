@@ -32,7 +32,7 @@ jobs:
         shell: cmd
         run: |
           cd duckdbODBC64
-          .\odbc_install.exe /Install
+          .\odbc_install.exe /CI /Install
 
       - name: Setup MSBuild and add to PATH
         uses: microsoft/setup-msbuild@v2
@@ -43,15 +43,15 @@ jobs:
         run: |
           msbuild .\csharp_DotNet8_ODBC.sln  /t:clean,build -restore /p:Configuration=Release
 
-      - name: Run the executable with sqlite3 test
-        id: run_executable
+      - name: Run with sqlite3
+        id: run_sqlite_executable
         shell: powershell
         run: |
           .\bin\Release\net8.0\csharp_DotNet8_ODBC.exe sqlite .\db .\db\test.sqlite3 .\sql\sqlite3\datetime.sql .\data
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
 
-      - name: Run the executable with sqlite3 test
-        id: run_executable
+      - name: Run with duckdb
+        id: run_duckdb_executable
         shell: powershell
         run: |
           .\bin\Release\net8.0\csharp_DotNet8_ODBC.exe duckdb .\db .\db\test.duckdb .\sql\sqlite3\datetime.sql .\data
