@@ -225,4 +225,7 @@ FROM example AS e, json_each(e.j, '$.species') AS je;
 SELECT je.key, je.value, je.type, je.id, je.parent, je.fullkey, je.rowid
 FROM example AS e, json_tree(e.j) AS je;
 
-
+DROP TABLE IF EXISTS example;
+DROP TABLE IF EXISTS example1;
+DROP TABLE IF EXISTS example2;
+SHOW ALL TABLES;

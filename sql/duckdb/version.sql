@@ -2,6 +2,6 @@
 .timer on
 
 .print DuckDB version string
--- RESULT:library_version,source_id
--- RESULT:v1.3.0-dev3365,fda0ba6a7a
+-- RESULT:library_version,source_id,codename
+-- RESULT:v1.3.2,0b83e5d2f6,Ossivalis
 PRAGMA version;

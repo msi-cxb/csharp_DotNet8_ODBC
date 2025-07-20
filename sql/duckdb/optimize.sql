@@ -139,4 +139,8 @@ EXPLAIN SELECT foo1, bar2 FROM foo, bar WHERE foo1 = bar1 and foo1 < 50 and bar2
 -- RESULT:49,15848
 SELECT foo1, bar2 FROM foo, bar WHERE foo1 = bar1 and foo1 < 50 and bar2 > 25;
 
+SET enable_profiling = 'no_output';
 
+PRAGMA enable_optimizer;
+
+SELECT foo1, bar2 FROM foo, bar WHERE foo1 = bar1 and foo1 < 50 and bar2 > 25;

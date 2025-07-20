@@ -142,8 +142,12 @@ namespace csharpOdbcExample
 
                                 foreach (string line in sql)
                                 {
-                                    //Console.WriteLine($">>>>>{line.Length} {line}");
-                                    if (line.TrimStart().StartsWith(".echo on", StringComparison.OrdinalIgnoreCase))
+                                    // Console.WriteLine($">>>>>{line.Length} {line}");
+                                    if (line.TrimStart().StartsWith(".quit", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        System.Environment.Exit(1);
+                                    }
+                                    else if (line.TrimStart().StartsWith(".echo on", StringComparison.OrdinalIgnoreCase))
                                     {
                                         o.echo = true;
                                     }
@@ -167,6 +171,20 @@ namespace csharpOdbcExample
                                     {
                                         var p = line.Replace(".print", "").Trim();
                                         Console.WriteLine($"PRINT: {p}");
+                                    }
+                                    else if (line.TrimStart().StartsWith(".system", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        var c = line.Replace(".system", "").Trim();
+                                        c = c.Replace("[[__DATAFOLDER__]]", dataFolder);
+                                        c = c.Replace("[[__DBFOLDER__]]", dbFolder);
+                                        Console.WriteLine($"SYSTEM: {c}");
+                                        System.Diagnostics.Process process = new System.Diagnostics.Process();
+                                        System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+                                        startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                                        startInfo.FileName = "cmd.exe";
+                                        startInfo.Arguments = "/C " + c;
+                                        process.StartInfo = startInfo;
+                                        process.Start();
                                     }
                                     else if (!line.TrimStart().StartsWith(".") && !line.TrimStart().StartsWith("--") && line.TrimStart().Length > 0)
                                     {
