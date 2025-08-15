@@ -208,6 +208,8 @@ namespace csharpOdbcExample
                             else if (line.TrimStart().StartsWith(".print", StringComparison.OrdinalIgnoreCase))
                             {
                                 var p = line.Replace(".print", "").Trim();
+                                p = p.Replace("[[__DATAFOLDER__]]", dataFolder);
+                                p = p.Replace("[[__DBFOLDER__]]", dbFolder);
                                 Console.WriteLine($"PRINT: {p}");
                             }
                             else if (line.TrimStart().StartsWith(".system", StringComparison.OrdinalIgnoreCase))

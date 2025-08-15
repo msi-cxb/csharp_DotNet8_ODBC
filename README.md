@@ -6,6 +6,10 @@ Problem: ODBC is not included in .NET Core.
 
 Solution: Use NuGet Package Manager to install `Microsoft.Windows.Compatibility`.
 
+
+
+https://downgit.github.io/#/home
+
 ----
 
 ## UPDATE 3 June 2025
