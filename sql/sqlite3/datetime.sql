@@ -1,10 +1,14 @@
-.timer on
-.echo on
+-- .timer on
+-- .echo on
+.conn sqlite3
 
-.print sqlite
+DROP TABLE IF EXISTS timer;
+CREATE TABLE timer (task_name TEXT, note TEXT, ts_msec REAL);
+insert into timer values('file','the start',unixepoch('now','subsec'));
 
 -- table with day that validates entry
-create or replace table d (
+drop table if exists d;
+create table d (
   day   date not null check (strftime('%F', unixepoch(day), 'unixepoch') = day)
 );
 
@@ -49,3 +53,21 @@ WITH dates AS (
 -- RESULT:20251101120000,2025-11-30
 -- RESULT:20251201120000,2025-12-31
 select day as firstOfMonth,date(day,'start of month','+1 month','-1 day') as lastOfMonth from d where strftime('%d', day) = '01';
+
+insert into timer values('file','the end',unixepoch('now','subsec'));
+
+.print time results
+select 
+    task_name,
+    note,
+    strftime('%H:%M:%f', ts_msec_delta, 'unixepoch') as delta
+from
+(
+    SELECT 
+        *,
+        ts_msec - LAG(ts_msec, 1) OVER (PARTITION BY task_name ORDER BY ts_msec) AS ts_msec_delta
+    FROM (
+        SELECT *, row_number() over () as rowid FROM timer
+    )
+) where ts_msec_delta IS NOT NULL order by rowid;
+

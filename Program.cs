@@ -16,8 +16,9 @@ namespace csharpOdbcExample
         public static string dbType;
         public static string dbFolder;
         public static string dbFile;
-        public static string sqlFile;
+        public static string sqlFileSpec;
         public static string dataFolder;
+
         public static Boolean echoInput = false;
 
         //**********************************************************************
@@ -27,16 +28,14 @@ namespace csharpOdbcExample
 
             Console.WriteLine($"full path to executable --> {appPath}");
 
-            if (args.Length == 5) 
+            if (args.Length == 4) 
             {
-                dbType = args[0];
-
-                dbFolder = args[1];
+                dbFolder = args[0];
                 dbFolder = Path.GetFullPath(dbFolder);
                 Directory.CreateDirectory(dbFolder);
                 Console.WriteLine($"dbFolder --> {dbFolder}");
 
-                dbFile = args[2];
+                dbFile = args[1];
                 if(dbFile == ":memory:")
                 {
                     Console.WriteLine($"dbFile --> {dbFile}");
@@ -47,16 +46,16 @@ namespace csharpOdbcExample
                     Console.WriteLine($"dbFile --> {dbFile}");
                 }
 
-                sqlFile = args[3];
-                sqlFile = Path.GetFullPath(sqlFile);
-                Console.WriteLine($"sqlFile --> {sqlFile}");
-
-                dataFolder = args[4];
+                dataFolder = args[2];
                 dataFolder = Path.GetFullPath(dataFolder);
                 Directory.CreateDirectory(dataFolder);
                 Console.WriteLine($"dataFolder --> {dataFolder}");
 
-                rtn = processFile();
+                sqlFileSpec = args[3];
+                sqlFileSpec = Path.GetFullPath(sqlFileSpec);
+                Console.WriteLine($"sqlFileSpec --> {sqlFileSpec}");
+
+                rtn = ProcessFiles(sqlFileSpec);
             }
             else
             {
@@ -66,163 +65,193 @@ namespace csharpOdbcExample
 
             return rtn;
         }
-        public static Int32 processFile()
+
+        ///////////////////////////////////////////////////
+        public static Int32 ProcessFiles(string sqlFileSpec)
         {
+            string p = Path.GetFullPath(Path.GetDirectoryName(sqlFileSpec));
+            string f = Path.GetFileName(sqlFileSpec);
+
+            var files = Directory.GetFiles(p,f);
+
+            if (files.Length > 0)
+            {
+                foreach (string file in files)
+                {
+                    Console.WriteLine($"\n\n***************************************************\nprocessing {file}...");
+                    ProcessFile(file);
+                }
+            }
+            else
+            {
+                Console.WriteLine($"no sql files found. ");
+            }
+
+            return 0;
+        }
+
+        ///////////////////////////////////////////////////
+        public static Int32 ProcessFile(string file)
+        {
+            // assumes we do not have .conn yet...every file needs this
+            Boolean bHaveConnStr = false;
+
             try
             {
                 MyOdbcClass o = new MyOdbcClass();
                 string query = string.Empty;
                 string expected = string.Empty;
 
-                Boolean bHaveConnStr;
 
-                if (dbFile == ":memory:")
+                (Int64 AffectedRecords, String DataTableString) rtn;
+
+                UInt64 ctr = 0;
+                List<string> sqlLines = new List<string>();
+
+                foreach (string line in File.ReadLines(file))
                 {
-                    bHaveConnStr = o.GetConnectionString(dbType,dbFile);
-                }
-                else
-                {
-                    bHaveConnStr = o.GetConnectionString(dbType, dbFile);
-                }
-
-                Console.WriteLine($"starting... bHaveConnStr {bHaveConnStr}");
-
-                if (bHaveConnStr)
-                {
-                    (Int64 AffectedRecords, String DataTableString) rtn;
-
-                    using (o.connection = new OdbcConnection(o.connStr))
+                    // not an empty line
+                    if ( (line.Trim().Length > 0) )
                     {
-                        o.connection.Open();
+                        ctr++;
 
-                        string s = string.Empty;
-
-                        var files = Directory.GetFiles(
-                            Path.GetFullPath(Path.GetDirectoryName(sqlFile)), 
-                            Path.GetFileName(sqlFile)
-                        );
-
-                        if (files.Length > 0)
+                        // we are using pipe to separate lines
+                        if(line.StartsWith(".") || line.StartsWith("--"))
                         {
-                            foreach (string file in files)
+                            // process the .conn early as the entire file will be run with this connection
+                            // then we don't need to add the .conn to the sql we will process later
+                            if(line.TrimStart().StartsWith(".conn", StringComparison.OrdinalIgnoreCase))
                             {
-                                Console.WriteLine($"\n\n***************************************************\nprocessing {file}...");
+                                dbType = line.Replace(".conn", "").Trim();
 
-                                UInt64 ctr = 0;
-                                List<string> sqlLines = new List<string>();
-
-                                foreach (string line in File.ReadLines(file))
+                                if (dbFile == ":memory:")
                                 {
-                                    // not an empty line
-                                    if ( (line.Trim().Length > 0) )
-                                    {
-                                        ctr++;
+                                    bHaveConnStr = o.GetConnectionString(dbType, dbFile);
+                                }
+                                else
+                                {
+                                    bHaveConnStr = o.GetConnectionString(dbType, dbFile);
 
-                                        // we are using pipe to separate lines
-                                        if(line.StartsWith(".") || line.StartsWith("--"))
-                                        {
-                                            // sqlite3 dot commands and single line comments
-                                            sqlLines.Add(line + "|");
-                                        }
-                                        else if( !line.TrimEnd().EndsWith(";") )
-                                        {
-                                            // for multi line sql statements
-                                            sqlLines.Add(line + " ");
-                                        }
-                                        else
-                                        {
-                                            // single line sql statements
-                                            sqlLines.Add(line + "|");
-                                        }
+                                    // each file we process should start with fresh empty db
+                                    if (File.Exists(dbFile))
+                                    {
+                                        Console.WriteLine($"***** Deleted {dbFile}");
+                                        File.Delete(dbFile);
                                     }
                                 }
 
-                                // create array of single line sql statements, comments and dot commands
-                                string[] sql = String.Join("", sqlLines.ToArray()).Split("|");
-
-                                foreach (string line in sql)
-                                {
-                                    // Console.WriteLine($">>>>>{line.Length} {line}");
-                                    if (line.TrimStart().StartsWith(".quit", StringComparison.OrdinalIgnoreCase))
-                                    {
-                                        System.Environment.Exit(1);
-                                    }
-                                    else if (line.TrimStart().StartsWith(".echo on", StringComparison.OrdinalIgnoreCase))
-                                    {
-                                        o.echo = true;
-                                    }
-                                    else if (line.TrimStart().StartsWith(".echo off", StringComparison.OrdinalIgnoreCase))
-                                    {
-                                        o.echo = false;
-                                    }
-                                    else if (line.TrimStart().StartsWith(".timer on", StringComparison.OrdinalIgnoreCase))
-                                    {
-                                        o.timer = true;
-                                    }
-                                    else if (line.TrimStart().StartsWith(".timer off", StringComparison.OrdinalIgnoreCase))
-                                    {
-                                        o.timer = false;
-                                    }
-                                    else if (line.TrimStart().StartsWith("-- RESULT:", StringComparison.OrdinalIgnoreCase))
-                                    {
-                                        expected += line.TrimStart().Replace("-- RESULT:", "");
-                                    }
-                                    else if (line.TrimStart().StartsWith(".print", StringComparison.OrdinalIgnoreCase))
-                                    {
-                                        var p = line.Replace(".print", "").Trim();
-                                        Console.WriteLine($"PRINT: {p}");
-                                    }
-                                    else if (line.TrimStart().StartsWith(".system", StringComparison.OrdinalIgnoreCase))
-                                    {
-                                        var c = line.Replace(".system", "").Trim();
-                                        c = c.Replace("[[__DATAFOLDER__]]", dataFolder);
-                                        c = c.Replace("[[__DBFOLDER__]]", dbFolder);
-                                        Console.WriteLine($"SYSTEM: {c}");
-                                        System.Diagnostics.Process process = new System.Diagnostics.Process();
-                                        System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-                                        startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
-                                        startInfo.FileName = "cmd.exe";
-                                        startInfo.Arguments = "/C " + c;
-                                        process.StartInfo = startInfo;
-                                        process.Start();
-                                    }
-                                    else if (!line.TrimStart().StartsWith(".") && !line.TrimStart().StartsWith("--") && line.TrimStart().Length > 0)
-                                    {
-                                        string sqlstr = line.Trim();
-
-                                        sqlstr = sqlstr.Replace("[[__DATAFOLDER__]]", dataFolder);
-                                        sqlstr = sqlstr.Replace("[[__DBFOLDER__]]", dbFolder);
-
-                                        // find the sql statements that require ExecuteQuery
-                                        // bool executeQuery = new string[] { "select", "explain", "pragma" }.Any(s => sqlstr.IndexOf(s, StringComparison.OrdinalIgnoreCase) >= 0);
-                                        bool executeNonQuery = new string[] {
-                                            "attach", 
-                                            "begin",
-                                            "commit", 
-                                            "copy", 
-                                            "create", 
-                                            "drop", 
-                                            "insert", 
-                                            "install",
-                                            "load",
-                                            "rollback",
-                                            "set"
-                                        }.Any(s => sqlstr.StartsWith(s, StringComparison.OrdinalIgnoreCase) == true);
-
-                                        o.Execute(sqlstr, !executeNonQuery, expected);
-
-                                        expected = string.Empty;
-                                    }
-                                }
+                                Console.WriteLine($"bHaveConnStr {bHaveConnStr} --> *** {dbType} *** {dbFile}");
                             }
+                            else 
+                            { 
+                                // sqlite3 dot commands and single line comments
+                                sqlLines.Add(line + "||||");
+                            }
+
+                        }
+                        else if( !line.TrimEnd().EndsWith(";") )
+                        {
+                            // for multi line sql statements
+                            sqlLines.Add(line + " ");
                         }
                         else
                         {
-                            Console.WriteLine($"no sql files found. ");
+                            // single line sql statements
+                            sqlLines.Add(line + "||||");
+                        }
+                    }
+                }
+
+                // create array of single line sql statements from the input sql file, comments and dot commands
+                string[] sql = String.Join("", sqlLines.ToArray()).Split("||||");
+
+                if (bHaveConnStr)
+                {
+                    // the entire sql file is run with a single connection
+                    using (o.connection = new OdbcConnection(o.connStr))
+                    {
+                        o.connection.Open();
+                        foreach (string line in sql)
+                        {
+                            //Console.WriteLine($">>>>>{line.Length} {line}");
+                            if (line.TrimStart().StartsWith(".quit", StringComparison.OrdinalIgnoreCase))
+                            {
+                                System.Environment.Exit(1);
+                            }
+                            else if (line.TrimStart().StartsWith(".echo on", StringComparison.OrdinalIgnoreCase))
+                            {
+                                o.echo = true;
+                            }
+                            else if (line.TrimStart().StartsWith(".echo off", StringComparison.OrdinalIgnoreCase))
+                            {
+                                o.echo = false;
+                            }
+                            else if (line.TrimStart().StartsWith(".timer on", StringComparison.OrdinalIgnoreCase))
+                            {
+                                o.timer = true;
+                            }
+                            else if (line.TrimStart().StartsWith(".timer off", StringComparison.OrdinalIgnoreCase))
+                            {
+                                o.timer = false;
+                            }
+                            else if (line.TrimStart().StartsWith("-- RESULT:", StringComparison.OrdinalIgnoreCase))
+                            {
+                                expected += line.TrimStart().Replace("-- RESULT:", "");
+                            }
+                            else if (line.TrimStart().StartsWith(".print", StringComparison.OrdinalIgnoreCase))
+                            {
+                                var p = line.Replace(".print", "").Trim();
+                                Console.WriteLine($"PRINT: {p}");
+                            }
+                            else if (line.TrimStart().StartsWith(".system", StringComparison.OrdinalIgnoreCase))
+                            {
+                                var c = line.Replace(".system", "").Trim();
+                                c = c.Replace("[[__DATAFOLDER__]]", dataFolder);
+                                c = c.Replace("[[__DBFOLDER__]]", dbFolder);
+                                Console.WriteLine($"SYSTEM: {c}");
+                                System.Diagnostics.Process process = new System.Diagnostics.Process();
+                                System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+                                startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                                startInfo.FileName = "cmd.exe";
+                                startInfo.Arguments = "/C " + c;
+                                process.StartInfo = startInfo;
+                                process.Start();
+                            }
+                            else if (!line.TrimStart().StartsWith(".") && !line.TrimStart().StartsWith("--") && line.TrimStart().Length > 0)
+                            {
+                                // if we got here then we have a sql statement
+                                string sqlstr = line.Trim();
+
+                                sqlstr = sqlstr.Replace("[[__DATAFOLDER__]]", dataFolder);
+                                sqlstr = sqlstr.Replace("[[__DBFOLDER__]]", dbFolder);
+
+                                // find the sql statements that require ExecuteQuery
+                                // bool executeQuery = new string[] { "select", "explain", "pragma" }.Any(s => sqlstr.IndexOf(s, StringComparison.OrdinalIgnoreCase) >= 0);
+                                bool executeNonQuery = new string[] {
+                                    "attach", 
+                                    "begin",
+                                    "commit", 
+                                    "copy", 
+                                    "create", 
+                                    "drop", 
+                                    "insert", 
+                                    "install",
+                                    "load",
+                                    "rollback",
+                                    "set",
+                                    "use"
+                                }.Any(s => sqlstr.StartsWith(s, StringComparison.OrdinalIgnoreCase) == true);
+
+                                o.Execute(sqlstr, !executeNonQuery, expected);
+                                expected = string.Empty;
+                            }                        
                         }
                         Console.WriteLine($"\nComplete. Error count: {o.errorCount}");
-                        o.connection.Close();
                     }
+                }
+                else
+                {
+                    Console.WriteLine($".conn was not provided...please update file to include .conn [duckdb|sqlite3].");
                 }
             }
             catch (Exception ex)
@@ -262,7 +291,7 @@ namespace csharpOdbcExample
 
             switch (dbType)
             {
-                case "sqlite":
+                case "sqlite3":
                     connStr = @"driver=SQLite3 ODBC Driver;NoWCHAR=1;database=" + dbPath + @";";
                     break;
                 case "duckdb":
@@ -300,9 +329,10 @@ namespace csharpOdbcExample
             try
             {
                 OdbcCommand command = new OdbcCommand(query, connection);
+
                 if (echo) 
-                { 
-                    Console.WriteLine($"query --> {query}"); 
+                {
+                    Console.WriteLine($"{executeQuery} query --> {query}"); 
                 }
 
                 if (executeQuery == true)
@@ -391,7 +421,7 @@ namespace csharpOdbcExample
                             }
                         }
 
-                        //Console.WriteLine($"CHECK result {result.Length} expected {expected.Length}");
+                        // Console.WriteLine($"CHECK result {result.Length} expected {expected.Length}");
                         if (expected.Length > 0)
                         {
                             if (String.Compare(result, expected)!= 0)
@@ -400,7 +430,6 @@ namespace csharpOdbcExample
                                 errorCount += 1;
                             }
                         }
-
 
                         reader.Close();
                         stopwatch.Stop();
@@ -439,8 +468,10 @@ namespace csharpOdbcExample
                         }
                         System.Environment.Exit(-1);
                     }
+                    Console.Out.Flush();
+                    Console.Error.Flush();
                 }
-                else
+                else // executeNonQuery
                 {
                     try
                     {
@@ -464,6 +495,8 @@ namespace csharpOdbcExample
                         Console.WriteLine("Exeception in ExecuteNonQuery: " + ex.Message + "\n" + ex.StackTrace + "\n");
                         System.Environment.Exit(-1);
                     }
+                    Console.Out.Flush();
+                    Console.Error.Flush();
                 }
             }
             catch (OdbcException ex)

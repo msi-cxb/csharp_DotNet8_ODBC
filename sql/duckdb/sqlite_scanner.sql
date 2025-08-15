@@ -146,6 +146,47 @@ INSERT INTO sqlite_db.tmp VALUES (52),(53),(54),(55),(56);
 INSERT INTO sqlite_db.tmp VALUES (62),(63),(64),(65),(66);
 COMMIT;
 
+
+-- one way to copy table from sqlite to duckdb is to
+-- export sqlite to parquet and then import parquet to duckdb
+-- however there is a better way...
+
+-- copy data from sqlite to duckdb via parquet
+-- COPY sqlite_db.tbl TO '[[__DATAFOLDER__]]/tbl.parquet';
+-- CREATE OR REPLACE TABLE tbl AS SELECT * FROM '[[__DATAFOLDER__]]/tbl.parquet';
+
+-- RESULT:id,name,k
+-- RESULT:42,DuckDB,-666
+-- RESULT:42,DuckDB,-777
+-- select * from tbl;
+
+-- COPY sqlite_db.tmp TO '[[__DATAFOLDER__]]/tmp.parquet';
+-- CREATE OR REPLACE TABLE tmp AS SELECT * FROM '[[__DATAFOLDER__]]/tmp.parquet';
+
+-- select * from tmp;
+
+.print ********************************************************
+.print you can copy tables directly from sqlite to duckdb
+.print ********************************************************
+CREATE OR REPLACE TABLE tmp AS FROM sqlite_db.tmp;
+
+.print ********************************************************
+.print you can copy tables directly from duckdb to sqlite
+.print ********************************************************
+CREATE OR REPLACE TABLE sqlite_db.new_tmp AS FROM tmp;
+
+-- RESULT:column_name,column_type,null,key,default,extra
+-- RESULT:i,BIGINT,YES,null,null,null
+DESCRIBE sqlite_db.tmp;
+
+-- RESULT:column_name,column_type,null,key,default,extra
+-- RESULT:i,BIGINT,YES,null,null,null
+DESCRIBE tmp;
+
+-- RESULT:column_name,column_type,null,key,default,extra
+-- RESULT:i,BIGINT,YES,null,null,null
+DESCRIBE sqlite_db.new_tmp;
+
 -- RESULT:i
 -- RESULT:42
 -- RESULT:43
@@ -162,19 +203,40 @@ COMMIT;
 -- RESULT:64
 -- RESULT:65
 -- RESULT:66
-SELECT * FROM sqlite_db.tmp;
+SELECT * FROM sqlite_db.tmp order by i;
 
--- copy data from sqlite to duckdb via parquet
-COPY sqlite_db.tbl TO '[[__DATAFOLDER__]]/tbl.parquet';
-CREATE OR REPLACE TABLE tbl AS SELECT * FROM '[[__DATAFOLDER__]]/tbl.parquet';
+-- RESULT:i
+-- RESULT:42
+-- RESULT:43
+-- RESULT:44
+-- RESULT:45
+-- RESULT:46
+-- RESULT:52
+-- RESULT:53
+-- RESULT:54
+-- RESULT:55
+-- RESULT:56
+-- RESULT:62
+-- RESULT:63
+-- RESULT:64
+-- RESULT:65
+-- RESULT:66
+select * from tmp order by i;
 
--- RESULT:id,name,k
--- RESULT:42,DuckDB,-666
--- RESULT:42,DuckDB,-777
-select * from tbl;
-
-COPY sqlite_db.tmp TO '[[__DATAFOLDER__]]/tmp.parquet';
-CREATE OR REPLACE TABLE tmp AS SELECT * FROM '[[__DATAFOLDER__]]/tmp.parquet';
-
-
-select * from tmp;
+-- RESULT:i
+-- RESULT:42
+-- RESULT:43
+-- RESULT:44
+-- RESULT:45
+-- RESULT:46
+-- RESULT:52
+-- RESULT:53
+-- RESULT:54
+-- RESULT:55
+-- RESULT:56
+-- RESULT:62
+-- RESULT:63
+-- RESULT:64
+-- RESULT:65
+-- RESULT:66
+select * from sqlite_db.new_tmp order by i;

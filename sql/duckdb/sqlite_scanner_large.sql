@@ -7,9 +7,8 @@ PRAGMA version;
 -- RESULT:6
 SELECT current_setting('threads');
 
--- remove data.parquet to start fresh
+-- remove database to start fresh
 .system del /Q [[__DATAFOLDER__]]\new_sqlite_database.* > nul 2>&1
-.system del /Q [[__DATAFOLDER__]]\large_table_sqlite.parquet > nul 2>&1
 
 .print install sqlite_scanner from local extensions repo (note these are signed copies from core)
 FORCE INSTALL sqlite_scanner from '.\local_extensions';
@@ -40,42 +39,56 @@ select
 from generate_series(1, 5000) s(i) 
 CROSS JOIN generate_series(1, 5000) t(j);
 
--- 25,000,000 records
 -- RESULT:cnt
 -- RESULT:25000000
 select count(1) as cnt from sqlite_db.large_table;
 
--- RESULT:id,hash,rand,value
--- RESULT:2,2060787363917578834,1,0.747204143391125
--- RESULT:3,8131803788478518982,0,0.5726404382373844
--- RESULT:3,8131803788478518982,1,0.6736244023239688
--- RESULT:4,8535942711051191036,0,0.02148794940409058
--- RESULT:4,8535942711051191036,1,0.34597365227268895
--- RESULT:4,8535942711051191036,1,0.6039073183711521
--- RESULT:5,4244145009296420692,0,0.43885053449014805
--- RESULT:5,4244145009296420692,0,0.7665807217848326
-select * from sqlite_db.large_table order by id,value limit 8;
+.print ********************************************************
+.print you can copy tables directly from sqlite to duckdb
+.print ********************************************************
+CREATE OR REPLACE TABLE large_table AS FROM sqlite_db.large_table;
 
-.print *******************************************
-.print copy data from sqlite to duckdb via parquet
-COPY sqlite_db.large_table TO '[[__DATAFOLDER__]]/large_table_sqlite.parquet';
-CREATE OR REPLACE TABLE large_table_sqlite AS SELECT * FROM '[[__DATAFOLDER__]]/large_table_sqlite.parquet';
-
--- 25,000,000 records
 -- RESULT:cnt
 -- RESULT:25000000
-select count(1) as cnt from large_table_sqlite;
+select count(1) as cnt from large_table;
+
+.print ********************************************************
+.print you can copy tables directly from duckdb to sqlite
+.print ********************************************************
+CREATE OR REPLACE TABLE sqlite_db.new_large_table AS FROM large_table;
+
+-- RESULT:cnt
+-- RESULT:25000000
+select count(1) as cnt from sqlite_db.new_large_table;
 
 -- RESULT:id,hash,rand,value
--- RESULT:2,2060787363917578834,1,0.747204143391125
--- RESULT:3,8131803788478518982,0,0.5726404382373844
--- RESULT:3,8131803788478518982,1,0.6736244023239688
--- RESULT:4,8535942711051191036,0,0.02148794940409058
--- RESULT:4,8535942711051191036,1,0.34597365227268895
--- RESULT:4,8535942711051191036,1,0.6039073183711521
--- RESULT:5,4244145009296420692,0,0.43885053449014805
--- RESULT:5,4244145009296420692,0,0.7665807217848326
-select * from large_table_sqlite order by id,value limit 8;
+-- RESULT:10000,7835423671037039418,0,0.009626607812609465
+-- RESULT:9999,6554257652517164275,1,0.06283780913628263
+-- RESULT:9999,6554257652517164275,0,0.7334942919165739
+-- RESULT:9998,1275346516494478339,0,0.4791401524453945
+-- RESULT:9998,1275346516494478339,0,0.8491802790838683
+select * from sqlite_db.large_table order by id desc,value limit 5;
+
+-- RESULT:id,hash,rand,value
+-- RESULT:10000,7835423671037039418,0,0.009626607812609465
+-- RESULT:9999,6554257652517164275,1,0.06283780913628263
+-- RESULT:9999,6554257652517164275,0,0.7334942919165739
+-- RESULT:9998,1275346516494478339,0,0.4791401524453945
+-- RESULT:9998,1275346516494478339,0,0.8491802790838683
+select * from large_table order by id desc,value limit 5;
+
+-- RESULT:id,hash,rand,value
+-- RESULT:10000,7835423671037039418,0,0.009626607812609465
+-- RESULT:9999,6554257652517164275,1,0.06283780913628263
+-- RESULT:9999,6554257652517164275,0,0.7334942919165739
+-- RESULT:9998,1275346516494478339,0,0.4791401524453945
+-- RESULT:9998,1275346516494478339,0,0.8491802790838683
+select * from sqlite_db.new_large_table order by id desc,value limit 5;
+
+DROP TABLE IF EXISTS sqlite_db.large_table;
+DROP TABLE IF EXISTS large_table;
+DROP TABLE IF EXISTS sqlite_db.new_large_table;
+
 
 .print *******************************************
 .print build a large_table in duckdb database file
@@ -99,18 +112,53 @@ select
 from generate_series(1, 5000) s(i) 
 CROSS JOIN generate_series(1, 5000) t(j);
 
--- 25,000,000 records
 -- RESULT:cnt
 -- RESULT:25000000
 select count(1) as cnt from large_table;
 
+.print ********************************************************
+.print you can copy tables directly from duckdb to sqlite
+.print ********************************************************
+CREATE OR REPLACE TABLE sqlite_db.large_table AS FROM large_table;
+
+-- RESULT:cnt
+-- RESULT:25000000
+select count(1) as cnt from sqlite_db.large_table;
+
+.print ********************************************************
+.print you can copy tables directly from sqlite to duckdb
+.print ********************************************************
+CREATE OR REPLACE TABLE new_large_table AS FROM sqlite_db.large_table;
+
+-- RESULT:cnt
+-- RESULT:25000000
+select count(1) as cnt from new_large_table;
+
 -- RESULT:id,hash,rand,value
--- RESULT:2,2060787363917578834,1,0.747204143391125
--- RESULT:3,8131803788478518982,0,0.5726404382373844
--- RESULT:3,8131803788478518982,1,0.6736244023239688
--- RESULT:4,8535942711051191036,0,0.02148794940409058
--- RESULT:4,8535942711051191036,1,0.34597365227268895
--- RESULT:4,8535942711051191036,1,0.6039073183711521
--- RESULT:5,4244145009296420692,0,0.43885053449014805
--- RESULT:5,4244145009296420692,0,0.7665807217848326
-select * from large_table order by id,value limit 8;
+-- RESULT:10000,7835423671037039418,0,0.009626607812609465
+-- RESULT:9999,6554257652517164275,1,0.06283780913628263
+-- RESULT:9999,6554257652517164275,0,0.7334942919165739
+-- RESULT:9998,1275346516494478339,0,0.4791401524453945
+-- RESULT:9998,1275346516494478339,0,0.8491802790838683
+select * from large_table order by id desc,value limit 5;
+
+-- RESULT:id,hash,rand,value
+-- RESULT:10000,7835423671037039418,0,0.009626607812609465
+-- RESULT:9999,6554257652517164275,1,0.06283780913628263
+-- RESULT:9999,6554257652517164275,0,0.7334942919165739
+-- RESULT:9998,1275346516494478339,0,0.4791401524453945
+-- RESULT:9998,1275346516494478339,0,0.8491802790838683
+select * from sqlite_db.large_table order by id desc,value limit 5;
+
+-- RESULT:id,hash,rand,value
+-- RESULT:10000,7835423671037039418,0,0.009626607812609465
+-- RESULT:9999,6554257652517164275,1,0.06283780913628263
+-- RESULT:9999,6554257652517164275,0,0.7334942919165739
+-- RESULT:9998,1275346516494478339,0,0.4791401524453945
+-- RESULT:9998,1275346516494478339,0,0.8491802790838683
+select * from new_large_table order by id desc,value limit 5;
+
+DETACH sqlite_db;
+
+-- remove database to start fresh
+.system del /Q [[__DATAFOLDER__]]\new_sqlite_database.* > nul 2>&1

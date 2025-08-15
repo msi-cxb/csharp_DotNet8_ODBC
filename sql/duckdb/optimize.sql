@@ -3,6 +3,9 @@
 .echo on
 .timer on
 
+.conn duckdb
+
+
 -- https://duckdb.org/docs/stable/guides/meta/explain
 -- https://duckdb.org/docs/stable/configuration/pragmas
 
