@@ -1,5 +1,6 @@
-.echo ON
-.timer ON
+-- .echo on
+-- .timer on
+.conn duckdb
 
 -- 90 days of 10 Hz data --> ????? records
 

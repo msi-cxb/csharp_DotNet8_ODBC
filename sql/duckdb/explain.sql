@@ -1,5 +1,5 @@
-.echo on
-.timer on
+-- .echo on
+-- .timer on
 .conn duckdb
 
 -- SET explain_output = 'physical_only';

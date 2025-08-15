@@ -1,7 +1,8 @@
 -- https://duckdb.org/2024/07/05/community-extensions.html
 
-.echo on
-.timer on
+-- .echo on
+-- .timer on
+.conn duckdb
 
 -- this works from duckdb.exe, but not from ODBC
 -- my guess is that this is because there is not a version 

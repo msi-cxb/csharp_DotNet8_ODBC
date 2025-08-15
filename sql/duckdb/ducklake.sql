@@ -1,7 +1,8 @@
 -- https://duckdb.org/2025/05/27/ducklake.html
 
-.echo ON
-.timer ON
+-- .echo on
+-- .timer on
+.conn duckdb
 
 -- cleanup any previous ducklake database files
 .system del /Q duckdb_database.ducklake

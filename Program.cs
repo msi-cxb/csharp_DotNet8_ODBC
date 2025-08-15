@@ -59,8 +59,15 @@ namespace csharpOdbcExample
             }
             else
             {
-                Console.WriteLine(@"usage: csharp_DotNet8_ODBC.exe [duckdb OR sqlite] [database folder] [database file] [sql file glob] [data folder]");
+                Console.WriteLine(@"usage: csharp_DotNet8_ODBC.exe [database folder] [database file] [data folder] [sql file glob]");
                 Console.WriteLine(@"hint: use full path or relative path (e.g. '.\filename') for file names, file globbing using '*' supported.");
+            }
+
+            // pause so we can see the output from the debug.writeline()
+            if (Debugger.IsAttached)
+            {
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey();
             }
 
             return rtn;
@@ -443,6 +450,7 @@ namespace csharpOdbcExample
                         }
                         Console.WriteLine("\nExecuteQuery OdbcException: {0}\n", errors.ToString());
                         // System.Environment.Exit(-1);
+                        errorCount += 1;
                     }
                     catch (Exception ex)
                     {

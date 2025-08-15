@@ -1,7 +1,8 @@
 -- https://duckdb.org/docs/stable/extensions/extension_distribution
 
-.echo on
-.timer on
+-- .echo on
+-- .timer on
+.conn duckdb
 
 PRAGMA version;
 

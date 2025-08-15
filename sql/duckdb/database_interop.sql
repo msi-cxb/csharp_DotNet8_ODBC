@@ -1,5 +1,6 @@
-.echo on
-.timer on
+-- .echo on
+-- .timer on
+.conn duckdb
 
 -- cleanup any previous ducklake database files
 .system del /Q "[[__DATAFOLDER__]]\big_table.csv"

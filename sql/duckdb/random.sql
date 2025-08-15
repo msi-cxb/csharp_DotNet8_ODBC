@@ -1,5 +1,6 @@
-.echo ON
-.timer ON
+-- .echo on
+-- .timer on
+.conn duckdb
 
 -- random value as BIGINT to avoid floating point rounding
 CREATE OR REPLACE TABLE random_table (

@@ -1,8 +1,7 @@
 -- https://15799.courses.cs.cmu.edu/spring2025/project1.html
 
-.echo on
-.timer on
-
+-- .echo on
+-- .timer on
 .conn duckdb
 
 

@@ -1,6 +1,6 @@
--- .echo ON
--- .timer OFF
--- .conn duckdb
+-- .echo on
+-- .timer on
+.conn duckdb
 
 WITH AllTables AS (
     SELECT

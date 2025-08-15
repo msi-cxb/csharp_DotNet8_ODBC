@@ -1,5 +1,6 @@
-.echo ON
-.timer ON
+-- .echo on
+-- .timer on
+.conn duckdb
 
 PRAGMA version;
 

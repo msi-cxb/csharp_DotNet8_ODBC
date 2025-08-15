@@ -1,7 +1,7 @@
 -- https://duckdb.org/2025/08/08/spatial-joins.html
 
-.echo ON
-.timer OFF
+-- .echo on
+-- .timer on
 .conn duckdb
 
 

@@ -1,5 +1,6 @@
-.echo on
-.timer on
+-- .echo on
+-- .timer on
+.conn duckdb
 
 INSTALL postgres;
 LOAD postgres;

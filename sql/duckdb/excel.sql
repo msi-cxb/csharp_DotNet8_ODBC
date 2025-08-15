@@ -1,5 +1,6 @@
-.timer on
-.echo on
+-- .echo on
+-- .timer on
+.conn duckdb
 
 .print duckdb excel
 -- As of DuckDB 1.2 also provides functionality to read and write Excel (.xlsx) files.

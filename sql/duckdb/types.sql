@@ -1,5 +1,6 @@
-.echo on
-.timer on
+-- .echo on
+-- .timer on
+.conn duckdb
 
 .print build a table of all DuckDB types
 

@@ -1,8 +1,9 @@
 -- https://duckdb.org/2023/04/28/spatial.html
 -- https://downgit.github.io/#/home?url=https:%2F%2Fgithub.com%2Fduckdb%2Fduckdb-spatial%2Ftree%2Fmain%2Ftest%2Fdata
 
-.echo on
-.timer on
+-- .echo on
+-- .timer on
+.conn duckdb
 
 INSTALL spatial;
 LOAD spatial;

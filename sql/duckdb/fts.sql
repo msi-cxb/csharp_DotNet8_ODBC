@@ -1,7 +1,8 @@
 -- https://duckdb.org/docs/stable/core_extensions/full_text_search
 
-.echo on
-.timer on
+-- .echo on
+-- .timer on
+.conn duckdb
 
 INSTALL fts;
 LOAD fts;

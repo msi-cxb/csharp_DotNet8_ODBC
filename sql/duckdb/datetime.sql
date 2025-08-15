@@ -1,5 +1,6 @@
-.timer on
-.echo on
+-- .echo on
+-- .timer on
+.conn duckdb
 
 .print duckdb
 

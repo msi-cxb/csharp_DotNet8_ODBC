@@ -1,4 +1,6 @@
-.echo on
+-- .echo on
+-- .timer on
+.conn duckdb
 
 .print dbfolder [[__DBFOLDER__]]
 .print datafolder [[__DATAFOLDER__]]

@@ -1,5 +1,6 @@
-.echo on
-.timer on
+-- .echo on
+-- .timer on
+.conn duckdb
 
 .print DuckDB version string
 -- RESULT:library_version,source_id,codename

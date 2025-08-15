@@ -1,8 +1,8 @@
 --https://duckdb.org/docs/stable/core_extensions/tpcds
 
-
-.echo on
-.timer on
+-- .echo on
+-- .timer on
+.conn duckdb
 
 .print TPCDS performance benchmark
 

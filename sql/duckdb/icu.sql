@@ -1,7 +1,8 @@
 -- https://duckdb.org/2022/01/06/time-zones.html
 
-.echo on
-.timer on
+-- .echo on
+-- .timer on
+.conn duckdb
 
 INSTALL icu;
 LOAD icu;

@@ -1,7 +1,8 @@
 -- https://duckdb.org/docs/stable/data/json/creating_json
 
-.echo on
-.timer on
+-- .echo on
+-- .timer on
+.conn duckdb
 
 -- RESULT:v
 -- RESULT:42
