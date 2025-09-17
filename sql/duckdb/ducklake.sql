@@ -16,7 +16,7 @@ LOAD ducklake;
 
 -- version that works
 -- RESULT:library_version,source_id,codename
--- RESULT:v1.3.2,0b83e5d2f6,Ossivalis
+-- RESULT:v1.4.0,b8a06e4a22,Andium
 PRAGMA version;
 
 -- -- use a DuckDB database "duckdb_database.ducklake" as the catalog database, the data path defaults to duckdb_database.ducklake.files

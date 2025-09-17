@@ -1,4 +1,4 @@
--- .echo on
+.echo on
 -- .timer on
 .conn duckdb
 
@@ -17,7 +17,7 @@ FORCE INSTALL sqlite_scanner from '.\local_extensions';
 LOAD sqlite_scanner;
 
 -- RESULT:extension_name,loaded,installed,install_path,description,aliases,extension_version,install_mode,installed_from
--- RESULT:sqlite_scanner,true,true,C:\Users\charlie\.duckdb\extensions\v1.3.2\windows_amd64\sqlite_scanner.duckdb_extension,Adds support for reading and writing SQLite database files,[sqlite, sqlite3],ed38d77,REPOSITORY,.\local_extensions
+-- RESULT:sqlite_scanner,true,true,C:\Users\charlie\.duckdb\extensions\v1.4.0\windows_amd64\sqlite_scanner.duckdb_extension,Adds support for reading and writing SQLite database files,[sqlite, sqlite3],833e105,REPOSITORY,.\local_extensions
 select * from duckdb_extensions() where extension_name = 'sqlite_scanner';
 
 ATTACH 'M:\Files\databases\sqlite_scanner_db\sakila.db' AS sakila (TYPE sqlite);
@@ -67,19 +67,19 @@ COPY sqlite_db.tbl TO '[[__DATAFOLDER__]]/data.parquet';
 -- RESULT:name,VARCHAR,YES,null,null,null
 DESCRIBE SELECT * FROM '[[__DATAFOLDER__]]/data.parquet';
 
--- RESULT:file_name,name,type,type_length,repetition_type,num_children,converted_type,scale,precision,field_id,logical_type
--- RESULT:H:\csharp_DotNet8_ODBC\bin\Debug\net8.0\data/data.parquet,duckdb_schema,null,null,REQUIRED,2,null,null,null,null,null
--- RESULT:H:\csharp_DotNet8_ODBC\bin\Debug\net8.0\data/data.parquet,id,INT64,null,OPTIONAL,null,INT_64,null,null,null,null
--- RESULT:H:\csharp_DotNet8_ODBC\bin\Debug\net8.0\data/data.parquet,name,BYTE_ARRAY,null,OPTIONAL,null,UTF8,null,null,null,null
+-- RESULT:file_name,name,type,type_length,repetition_type,num_children,converted_type,scale,precision,field_id,logical_type,duckdb_type
+-- RESULT:G:\csharp_DotNet8_ODBC\bin\Debug\net8.0\data/data.parquet,duckdb_schema,null,null,REQUIRED,2,null,null,null,null,null,null
+-- RESULT:G:\csharp_DotNet8_ODBC\bin\Debug\net8.0\data/data.parquet,id,INT64,null,OPTIONAL,null,INT_64,null,null,null,null,BIGINT
+-- RESULT:G:\csharp_DotNet8_ODBC\bin\Debug\net8.0\data/data.parquet,name,BYTE_ARRAY,null,OPTIONAL,null,UTF8,null,null,null,null,VARCHAR
 SELECT * FROM parquet_schema('[[__DATAFOLDER__]]/data.parquet');
 
--- RESULT:file_name,row_group_id,row_group_num_rows,row_group_num_columns,row_group_bytes,column_id,file_offset,num_values,path_in_schema,type,stats_min,stats_max,stats_null_count,stats_distinct_count,stats_min_value,stats_max_value,compression,encodings,index_page_offset,dictionary_page_offset,data_page_offset,total_compressed_size,total_uncompressed_size,key_value_metadata,bloom_filter_offset,bloom_filter_length,min_is_exact,max_is_exact
--- RESULT:H:\csharp_DotNet8_ODBC\bin\Debug\net8.0\data/data.parquet,0,1,2,96,0,0,1,id,INT64,42,42,0,1,42,42,SNAPPY,RLE_DICTIONARY,null,4,27,51,47,{},108,47,true,true
--- RESULT:H:\csharp_DotNet8_ODBC\bin\Debug\net8.0\data/data.parquet,0,1,2,96,1,0,1,name,BYTE_ARRAY,DuckDB,DuckDB,0,1,DuckDB,DuckDB,SNAPPY,RLE_DICTIONARY,null,55,80,53,49,{},155,47,true,true
+-- RESULT:file_name,row_group_id,row_group_num_rows,row_group_num_columns,row_group_bytes,column_id,file_offset,num_values,path_in_schema,type,stats_min,stats_max,stats_null_count,stats_distinct_count,stats_min_value,stats_max_value,compression,encodings,index_page_offset,dictionary_page_offset,data_page_offset,total_compressed_size,total_uncompressed_size,key_value_metadata,bloom_filter_offset,bloom_filter_length,min_is_exact,max_is_exact,row_group_compressed_bytes,geo_bbox,geo_types
+-- RESULT:G:\csharp_DotNet8_ODBC\bin\Debug\net8.0\data/data.parquet,0,1,2,64,0,0,1,id,INT64,42,42,0,null,42,42,SNAPPY,PLAIN,null,null,4,33,31,{},null,null,true,true,1,null,null
+-- RESULT:G:\csharp_DotNet8_ODBC\bin\Debug\net8.0\data/data.parquet,0,1,2,64,1,0,1,name,BYTE_ARRAY,DuckDB,DuckDB,0,null,DuckDB,DuckDB,SNAPPY,PLAIN,null,null,37,35,33,{},null,null,true,true,1,null,null
 SELECT * FROM parquet_metadata('[[__DATAFOLDER__]]/data.parquet');
 
--- RESULT:file_name,created_by,num_rows,num_row_groups,format_version,encryption_algorithm,footer_signing_key_metadata
--- RESULT:H:\csharp_DotNet8_ODBC\bin\Debug\net8.0\data/data.parquet,DuckDB version v1.3.2 (build 0b83e5d2f6),1,1,1,null,null
+-- RESULT:file_name,created_by,num_rows,num_row_groups,format_version,encryption_algorithm,footer_signing_key_metadata,file_size_bytes,footer_size
+-- RESULT:G:\csharp_DotNet8_ODBC\bin\Debug\net8.0\data/data.parquet,DuckDB version v1.4.0 (build b8a06e4a22),1,1,1,null,null,324,244
 SELECT * FROM parquet_file_metadata('[[__DATAFOLDER__]]/data.parquet');
 
 -- exports sakila to parquet files

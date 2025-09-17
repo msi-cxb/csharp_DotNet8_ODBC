@@ -10,7 +10,7 @@ LOAD spatial;
 
 .print DuckDB version string
 -- RESULT:library_version,source_id,codename
--- RESULT:v1.3.2,0b83e5d2f6,Ossivalis
+-- RESULT:v1.4.0,b8a06e4a22,Andium
 PRAGMA version;
 
 -- "H:\csharp_DotNet8_ODBC\bin\Debug\net8.0\data\spatial\spatialjoins\biketrips.duckdb"

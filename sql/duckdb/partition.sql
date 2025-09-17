@@ -1,4 +1,4 @@
--- .echo on
+.echo on
 -- .timer on
 .conn duckdb
 
@@ -10,10 +10,17 @@ SELECT current_setting('threads');
 
 -- remove data.parquet to start fresh
 .system del /Q [[__DATAFOLDER__]]\flights*.csv > nul 2>&1
+.system rmdir /Q /S  [[__DATAFOLDER__]]\flights
 -- .system del /Q [[__DATAFOLDER__]]\large_table_sqlite.parquet > nul 2>&1
 
 -- get the sample data from https://duckdb.org/data/flights.csv
 CREATE OR REPLACE TABLE flights AS FROM 'https://duckdb.org/data/flights.csv';
+
+-- RESULT:FlightDate,UniqueCarrier,OriginCityName,DestCityName
+-- RESULT:19880101120000,AA,New York, NY,Los Angeles, CA
+-- RESULT:19880102120000,AA,New York, NY,Los Angeles, CA
+-- RESULT:19880103120000,AA,New York, NY,Los Angeles, CA
+select * from flights;
 
 -- Hive Partitioning and Partitioned Writes
 COPY (
@@ -44,16 +51,24 @@ COPY (
 -- RESULT:19880101120000,AA,New York, NY,Los Angeles, CA,1,1,1988
 -- RESULT:19880102120000,AA,New York, NY,Los Angeles, CA,2,1,1988
 -- RESULT:19880103120000,AA,New York, NY,Los Angeles, CA,3,1,1988
-select * from './data/flights/*/*/*/*.csv';
+select 
+    * 
+from 
+    './data/flights/*/*/*/*.csv';
 
 -- this will read any csv files in any subfolders contained in data
 -- RESULT:FlightDate,UniqueCarrier,OriginCityName,DestCityName,day,month,year
 -- RESULT:19880101120000,AA,New York, NY,Los Angeles, CA,1,1,1988
 -- RESULT:19880102120000,AA,New York, NY,Los Angeles, CA,2,1,1988
 -- RESULT:19880103120000,AA,New York, NY,Los Angeles, CA,3,1,1988
-select * from './data/**/*.csv';
+select 
+    * 
+from 
+    './data/flights/**/*.csv';
 
--- though not obvious here, with hive_partitioning this query only read the file "...\data\flights\year=1988\month=1\day=2\data_0.csv"
+-- though not obvious here, with hive_partitioning this query only reads the file "...\data\flights\year=1988\month=1\day=2\data_0.csv"
+-- RESULT:FlightDate,UniqueCarrier,OriginCityName,DestCityName,day,month,year
+-- RESULT:19880102120000,AA,New York, NY,Los Angeles, CA,2,1,1988
 SELECT 
     *
 FROM 

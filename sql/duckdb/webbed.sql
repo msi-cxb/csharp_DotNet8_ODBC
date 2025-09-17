@@ -2,6 +2,9 @@
 -- .timer on
 .conn duckdb
 
+.print webbed not yet available for duckdb v1.4.0
+.quit
+
 .print '[[__DATAFOLDER__]]'
 .print '[[__DBTAFOLDER__]]'
 
@@ -12,6 +15,7 @@ INSTALL webbed FROM community;
 LOAD webbed;
 
 SELECT extension_name,loaded,installed,install_path FROM duckdb_extensions() where installed = true;
+
 
 -- Read XML files directly into tables
 -- RESULT:name,skills

@@ -1,6 +1,6 @@
 -- https://duckdb.org/docs/stable/data/json/creating_json
 
--- .echo on
+.echo on
 -- .timer on
 .conn duckdb
 
@@ -193,38 +193,35 @@ INSERT INTO example VALUES
     ('{"family": "canidae", "species": ["labrador", "bulldog"], "hair": true}');
 
 -- RESULT:key,value,type,atom,id,parent,fullkey,path,rowid
--- RESULT:family,"anatidae",VARCHAR,"anatidae",2,null,$.family,$,0
--- RESULT:species,["duck","goose"],ARRAY,null,4,null,$.species,$,1
 -- RESULT:coolness,42.42,DOUBLE,42.42,8,null,$.coolness,$,2
+-- RESULT:family,"anatidae",VARCHAR,"anatidae",2,null,$.family,$,0
 -- RESULT:family,"canidae",VARCHAR,"canidae",2,null,$.family,$,0
--- RESULT:species,["labrador","bulldog"],ARRAY,null,4,null,$.species,$,1
 -- RESULT:hair,true,BOOLEAN,true,8,null,$.hair,$,2
-SELECT je.*, je.rowid
-FROM example AS e, json_each(e.j) AS je;
+-- RESULT:species,["duck","goose"],ARRAY,null,4,null,$.species,$,1
+-- RESULT:species,["labrador","bulldog"],ARRAY,null,4,null,$.species,$,1
+SELECT je.*, je.rowid FROM example AS e, json_each(e.j) AS je order by key,value;
 
 -- RESULT:key,value,type,atom,id,parent,fullkey,path,rowid
 -- RESULT:0,"duck",VARCHAR,"duck",5,null,$.species[0],$.species,0
--- RESULT:1,"goose",VARCHAR,"goose",6,null,$.species[1],$.species,1
 -- RESULT:0,"labrador",VARCHAR,"labrador",5,null,$.species[0],$.species,0
 -- RESULT:1,"bulldog",VARCHAR,"bulldog",6,null,$.species[1],$.species,1
-SELECT je.*, je.rowid
-FROM example AS e, json_each(e.j, '$.species') AS je;
+-- RESULT:1,"goose",VARCHAR,"goose",6,null,$.species[1],$.species,1
+SELECT je.*, je.rowid FROM example AS e, json_each(e.j, '$.species') AS je order by key,value;
 
 -- RESULT:key,value,type,id,parent,fullkey,rowid
--- RESULT:null,{"family":"anatidae","species":["duck","goose"],"coolness":42.42},OBJECT,0,null,$,0
--- RESULT:family,"anatidae",VARCHAR,2,0,$.family,1
--- RESULT:species,["duck","goose"],ARRAY,4,0,$.species,2
 -- RESULT:0,"duck",VARCHAR,5,4,$.species[0],3
--- RESULT:1,"goose",VARCHAR,6,4,$.species[1],4
--- RESULT:coolness,42.42,DOUBLE,8,0,$.coolness,5
--- RESULT:null,{"family":"canidae","species":["labrador","bulldog"],"hair":true},OBJECT,0,null,$,0
--- RESULT:family,"canidae",VARCHAR,2,0,$.family,1
--- RESULT:species,["labrador","bulldog"],ARRAY,4,0,$.species,2
 -- RESULT:0,"labrador",VARCHAR,5,4,$.species[0],3
 -- RESULT:1,"bulldog",VARCHAR,6,4,$.species[1],4
+-- RESULT:1,"goose",VARCHAR,6,4,$.species[1],4
+-- RESULT:coolness,42.42,DOUBLE,8,0,$.coolness,5
+-- RESULT:family,"anatidae",VARCHAR,2,0,$.family,1
+-- RESULT:family,"canidae",VARCHAR,2,0,$.family,1
 -- RESULT:hair,true,BOOLEAN,8,0,$.hair,5
-SELECT je.key, je.value, je.type, je.id, je.parent, je.fullkey, je.rowid
-FROM example AS e, json_tree(e.j) AS je;
+-- RESULT:species,["duck","goose"],ARRAY,4,0,$.species,2
+-- RESULT:species,["labrador","bulldog"],ARRAY,4,0,$.species,2
+-- RESULT:null,{"family":"anatidae","species":["duck","goose"],"coolness":42.42},OBJECT,0,null,$,0
+-- RESULT:null,{"family":"canidae","species":["labrador","bulldog"],"hair":true},OBJECT,0,null,$,0
+SELECT je.key, je.value, je.type, je.id, je.parent, je.fullkey, je.rowid FROM example AS e, json_tree(e.j) AS je order by key,value;
 
 DROP TABLE IF EXISTS example;
 DROP TABLE IF EXISTS example1;

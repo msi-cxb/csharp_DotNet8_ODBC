@@ -2,6 +2,9 @@
 -- .timer on
 .conn duckdb
 
+-- show how to create a temp table and populate with timing info 
+-- that measures start/stop time and msec delta between start/stop time
+
 CREATE OR REPLACE TEMPORARY TABLE timer (task_name VARCHAR, note VARCHAR, ts_msec TIMESTAMP);
 
 .print ****************************************
@@ -39,13 +42,16 @@ insert into timer values('file','e file to test timer',current_localtimestamp())
 .print end file
 .print ****************************************
 
-.print
+.print ****************************************
+.print final query
+.print ****************************************
 select * from
 (
     SELECT 
         task_name,
         note,
-        ts_msec - LAG(ts_msec, 1) OVER (PARTITION BY task_name ORDER BY ts_msec) AS ts_msec_delta
+        ts_msec - LAG(ts_msec, 1) OVER (PARTITION BY task_name ORDER BY ts_msec) AS ts_msec_delta,
+        rowid
     FROM (
         SELECT *, row_number() over () as rowid FROM timer
     )

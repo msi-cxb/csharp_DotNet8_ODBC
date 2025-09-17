@@ -4,15 +4,13 @@
 -- .timer on
 .conn duckdb
 
--- this works from duckdb.exe, but not from ODBC
--- my guess is that this is because there is not a version 
--- available that matches git tag
--- need to build/install driver based on release tag and not developer commit
+-- this works from duckdb.exe and ODBC with V1.4.0
 
 INSTALL h3 FROM community;
 LOAD h3;
 
--- RESULT: cell_id,boundary,cnt617733150970216447,POLYGON ((-73.997008 40.764602, -73.999112 40.763663, -73.999042 40.761902, -73.996869 40.761080, -73.994765 40.762018, -73.994834 40.763779, -73.997008 40.764602)),24406
+-- RESULT:cell_id,boundary,cnt
+-- RESULT:619056821840379903,POLYGON ((0.000098 -0.000311, 0.000362 0.001335, -0.000777 0.002232, -0.002182 0.001483, -0.002446 -0.000163, -0.001306 -0.001060, 0.000098 -0.000311)),268965
 SELECT
     h3_latlng_to_cell(pickup_latitude, pickup_longitude, 9) AS cell_id,
     h3_cell_to_boundary_wkt(cell_id) AS boundary,
@@ -20,5 +18,6 @@ SELECT
 FROM read_parquet('https://blobs.duckdb.org/data/yellow_tripdata_2010-01.parquet')
 GROUP BY cell_id
 HAVING cnt > 10
+order by cnt desc
 limit 1;
 

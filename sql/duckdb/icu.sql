@@ -8,8 +8,8 @@ INSTALL icu;
 LOAD icu;
 
 .print Show the current time zone. The default is set to ICU current time zone.
--- RESULT:name,value,description,input_type,scope
--- RESULT:TimeZone,America/Sao_Paulo,The current time zone,VARCHAR,GLOBAL
+-- RESULT:name,value,description,input_type,scope,aliases
+-- RESULT:TimeZone,America/Phoenix,The current time zone,VARCHAR,GLOBAL,[]
 SELECT * FROM duckdb_settings() WHERE name = 'TimeZone';
 
 .print Choose a time zone.
@@ -28,8 +28,8 @@ ORDER BY 1
 LIMIT 5;
 
 .print Show the current calendar. The default is set to ICUs current locale.
--- RESULT:name,value,description,input_type,scope
--- RESULT:Calendar,gregorian,The current calendar,VARCHAR,GLOBAL
+-- RESULT:name,value,description,input_type,scope,aliases
+-- RESULT:Calendar,gregorian,The current calendar,VARCHAR,GLOBAL,[]
 SELECT * FROM duckdb_settings() WHERE name = 'Calendar';
 
 .print  List the available calendars
@@ -50,9 +50,7 @@ SET TimeZone = 'Asia/Tokyo';
 
 -- RESULT:era(CAST('2019-05-01 00:00:00+10' AS TIMESTAMP WITH TIME ZONE)),era(CAST('2019-05-01 00:00:00+09' AS TIMESTAMP WITH TIME ZONE))
 -- RESULT:235,236
-SELECT
-     era('2019-05-01 00:00:00+10'::TIMESTAMPTZ),
-     era('2019-05-01 00:00:00+09'::TIMESTAMPTZ);
+SELECT era('2019-05-01 00:00:00+10'::TIMESTAMPTZ), era('2019-05-01 00:00:00+09'::TIMESTAMPTZ);
 
 
 
