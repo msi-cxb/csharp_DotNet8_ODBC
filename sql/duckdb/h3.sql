@@ -6,7 +6,8 @@
 
 -- this works from duckdb.exe and ODBC with V1.4.0
 
-INSTALL h3 FROM community;
+FORCE INSTALL h3 from '.\local_extensions';
+-- INSTALL h3 FROM community;
 LOAD h3;
 
 -- RESULT:cell_id,boundary,cnt

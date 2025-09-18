@@ -11,7 +11,8 @@
 -- remove database to start fresh
 .system del /Q [[__DBFOLDER__]]\joined.geojsonseq > nul 2>&1
 
-INSTALL spatial;
+FORCE INSTALL spatial from '.\local_extensions';
+-- INSTALL spatial;
 LOAD spatial;
 
 CREATE OR REPLACE TABLE rides AS

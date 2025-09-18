@@ -5,7 +5,8 @@
 .conn duckdb
 
 
-INSTALL spatial;
+FORCE INSTALL spatial from '.\local_extensions';
+-- INSTALL spatial;
 LOAD spatial;
 
 .print DuckDB version string

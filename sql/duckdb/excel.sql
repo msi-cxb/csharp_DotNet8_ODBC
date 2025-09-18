@@ -5,7 +5,8 @@
 .print duckdb excel
 -- As of DuckDB 1.2 also provides functionality to read and write Excel (.xlsx) files.
 
-INSTALL excel;
+FORCE INSTALL excel from '.\local_extensions';
+-- INSTALL excel;
 LOAD excel;
 
 -- excel scalar functions

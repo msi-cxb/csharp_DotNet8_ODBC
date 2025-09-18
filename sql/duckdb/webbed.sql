@@ -11,7 +11,8 @@
 PRAGMA version;
 
 -- https://duckdb.org/community_extensions/extensions/webbed.html
-INSTALL webbed FROM community;
+FORCE INSTALL webbed from '.\local_extensions';
+-- INSTALL webbed;
 LOAD webbed;
 
 SELECT extension_name,loaded,installed,install_path FROM duckdb_extensions() where installed = true;

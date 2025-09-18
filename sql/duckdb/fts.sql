@@ -4,7 +4,8 @@
 -- .timer on
 .conn duckdb
 
-INSTALL fts;
+FORCE INSTALL fts from '.\local_extensions';
+-- INSTALL fts;
 LOAD fts;
 
 CREATE OR REPLACE TABLE documents (

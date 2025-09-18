@@ -2,7 +2,8 @@
 -- .timer on
 .conn duckdb
 
-INSTALL postgres;
+FORCE INSTALL postgres from '.\local_extensions';
+-- INSTALL postgres;
 LOAD postgres;
 
 CREATE SECRET postgres_secret_one (

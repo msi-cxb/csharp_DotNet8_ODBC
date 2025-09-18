@@ -6,7 +6,9 @@
 
 .print TPCDS performance benchmark
 
-INSTALL tpcds;
+
+FORCE INSTALL tpch from '.\local_extensions';
+-- INSTALL tpch;
 LOAD tpcds;
 
 DROP TABLE IF EXISTS customer;

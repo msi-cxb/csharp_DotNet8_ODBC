@@ -4,7 +4,8 @@
 -- .timer on
 .conn duckdb
 
-INSTALL icu;
+FORCE INSTALL icu from '.\local_extensions';
+-- INSTALL icu;
 LOAD icu;
 
 .print Show the current time zone. The default is set to ICU current time zone.
