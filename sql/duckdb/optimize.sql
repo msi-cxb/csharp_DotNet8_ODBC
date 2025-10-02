@@ -1,7 +1,7 @@
 -- https://15799.courses.cs.cmu.edu/spring2025/project1.html
 
--- .echo on
--- .timer on
+.echo on
+.timer on
 .conn duckdb
 
 
@@ -12,14 +12,13 @@
 -- SET explain_output = 'optimized_only';
 SET explain_output = 'all';
 
--- SET enable_profiling = 'no_output';
+SET enable_profiling = 'no_output';
 -- SET enable_profiling = 'json';
 -- SET enable_profiling = 'query_tree';
-SET enable_profiling = 'query_tree_optimizer';
+-- SET enable_profiling = 'query_tree_optimizer';
 
--- SET profiling_mode = 'standard';
-SET profiling_mode = 'detailed';
-
+SET profiling_mode = 'standard';
+-- SET profiling_mode = 'detailed';
 
 CREATE OR REPLACE TABLE foo (foo1 int, foo2 int);
 
