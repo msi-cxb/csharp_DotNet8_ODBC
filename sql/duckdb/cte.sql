@@ -1,4 +1,4 @@
--- .echo on
+.echo on
 -- .timer on
 .conn duckdb
 
@@ -44,3 +44,10 @@ Tables AS (
         AllTables
 )
 select * from Tables;
+
+-- RESULT:(col1 + col2)
+-- RESULT:3
+WITH cteName (col1, col2) AS (
+    SELECT 1, 2
+)
+SELECT col1 + col2 FROM cteName;

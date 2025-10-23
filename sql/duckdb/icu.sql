@@ -19,7 +19,7 @@ SET TimeZone = 'America/Los_Angeles';
 .print Emulate Postgres time zone table
 -- RESULT:name,abbrev,utc_offset
 -- RESULT:ACT,ACT,09:30:00
--- RESULT:AET,AET,10:00:00
+-- RESULT:AET,AET,11:00:00
 -- RESULT:AGT,AGT,-03:00:00
 -- RESULT:ART,ART,03:00:00
 -- RESULT:AST,AST,-08:00:00

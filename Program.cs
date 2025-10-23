@@ -235,7 +235,15 @@ namespace csharpOdbcExample
                                 sqlstr = sqlstr.Replace("[[__DBFOLDER__]]", dbFolder);
 
                                 // find the sql statements that require ExecuteQuery
-                                // bool executeQuery = new string[] { "select", "explain", "pragma" }.Any(s => sqlstr.IndexOf(s, StringComparison.OrdinalIgnoreCase) >= 0);
+
+                                bool executeQuery = new string[] {
+                                    "create property graph",
+                                    "explain",
+                                    "from",
+                                    "pragma",
+                                    "select"
+                                }.Any(s => sqlstr.IndexOf(s, StringComparison.OrdinalIgnoreCase) >= 0);
+
                                 bool executeNonQuery = new string[] {
                                     "attach", 
                                     "begin",
@@ -251,7 +259,8 @@ namespace csharpOdbcExample
                                     "use"
                                 }.Any(s => sqlstr.StartsWith(s, StringComparison.OrdinalIgnoreCase) == true);
 
-                                o.Execute(sqlstr, !executeNonQuery, expected);
+                                o.Execute(sqlstr, executeQuery, expected);
+                                //o.Execute(sqlstr, !executeNonQuery, expected);
                                 expected = string.Empty;
                             }                        
                         }
@@ -353,6 +362,7 @@ namespace csharpOdbcExample
                     {
                         stopwatch.Start();
                         OdbcDataReader reader = command.ExecuteReader();
+                        // Console.WriteLine($"    ExecuteReader:{reader.HasRows} {reader.FieldCount}");
                         if (timer) { Console.WriteLine($"TIMER: {ToPrettyFormat(stopwatch.Elapsed)}"); }
 
                         string s = string.Empty;

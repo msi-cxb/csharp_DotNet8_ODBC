@@ -1,4 +1,4 @@
--- .echo on
+.echo on
 -- .timer on
 .conn duckdb
 
@@ -10,12 +10,15 @@
 
 PRAGMA version;
 
+-- trying to make results reproducable
+SET threads TO 1;
+
 -- RESULT:current_setting('threads')
--- RESULT:6
+-- RESULT:1
 SELECT current_setting('threads');
 
 -- remove database to start fresh
-.system del /Q [[__DBFOLDER__]]\postgresql_sqlite_scanner.db > nul 2>&1
+.system del /Q [[__DBFOLDER__]]\postgresql_sqlite_scanner.db > nul 2>&1
 
 .print *************************************************
 FORCE INSTALL sqlite_scanner from '.\local_extensions';
@@ -211,17 +214,19 @@ CREATE OR REPLACE TABLE tbls as select * from (SHOW) order by database,schema,na
 -- RESULT:5,postgres_db,public,sqlite3_db_sqlite3_table,[id, name],[BIGINT, VARCHAR],false
 -- RESULT:6,postgres_db,public,sqlite3_table,[id, name],[BIGINT, VARCHAR],false
 -- RESULT:7,sqlite3_db,main,duckdb_table,[id, name],[BIGINT, VARCHAR],false
--- RESULT:8,sqlite3_db,main,postgres_db_postgres_table,[id, id, name, name],[BIGINT, BIGINT, VARCHAR, VARCHAR],false
+-- RESULT:8,sqlite3_db,main,postgres_db_postgres_table,[id, name],[BIGINT, VARCHAR],false
 -- RESULT:9,sqlite3_db,main,postgres_db_sqlite3_table,[id, name],[BIGINT, VARCHAR],false
 -- RESULT:10,sqlite3_db,main,postgres_table,[id, name],[BIGINT, VARCHAR],false
 -- RESULT:11,sqlite3_db,main,sqlite3_db_postgres_table,[id, name],[BIGINT, VARCHAR],false
--- RESULT:12,test,main,all_rows,[id, name],[INTEGER, VARCHAR],false
--- RESULT:13,test,main,duckdb_table,[id, name],[INTEGER, VARCHAR],false
--- RESULT:14,test,main,postgres_db_postgres_table,[id, name],[INTEGER, VARCHAR],false
--- RESULT:15,test,main,postgres_db_sqlite3_table,[id, name],[BIGINT, VARCHAR],false
--- RESULT:16,test,main,sqlite3_db_postgres_table,[id, name],[BIGINT, VARCHAR],false
--- RESULT:17,test,main,sqlite3_db_sqlite3_table,[id, name],[BIGINT, VARCHAR],false
-select rowid, * from tbls where name != 'tbls' order by rowid;
+-- RESULT:12,sqlite3_db,main,sqlite3_db_sqlite3_table,[id, name],[BIGINT, VARCHAR],false
+-- RESULT:13,sqlite3_db,main,sqlite3_table,[id, name],[BIGINT, VARCHAR],false
+-- RESULT:14,test,main,all_rows,[id, name],[INTEGER, VARCHAR],false
+-- RESULT:15,test,main,duckdb_table,[id, name],[INTEGER, VARCHAR],false
+-- RESULT:16,test,main,postgres_db_postgres_table,[id, name],[INTEGER, VARCHAR],false
+-- RESULT:17,test,main,postgres_db_sqlite3_table,[id, name],[BIGINT, VARCHAR],false
+-- RESULT:18,test,main,sqlite3_db_postgres_table,[id, name],[BIGINT, VARCHAR],false
+-- RESULT:19,test,main,sqlite3_db_sqlite3_table,[id, name],[BIGINT, VARCHAR],false
+select rowid, * from tbls where name != 'tbls' ORDER BY database,schema,name;
  
 DETACH sqlite3_db;
 

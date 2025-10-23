@@ -2,6 +2,9 @@
 -- .timer on
 .conn duckdb
 
+-- cleanup any previous files
+.system del /Q "[[__DATAFOLDER__]]\test.xlsx"
+
 .print duckdb excel
 -- As of DuckDB 1.2 also provides functionality to read and write Excel (.xlsx) files.
 

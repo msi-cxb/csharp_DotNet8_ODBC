@@ -1,7 +1,7 @@
 -- https://duckdb.org/docs/stable/extensions/extension_distribution
 
 -- don't need to run this one normally as it is used to (re)load extensions
-.quit
+-- .quit
 
 .echo on
 -- .timer on
@@ -9,7 +9,7 @@
 
 PRAGMA version;
 
--- UPDATE EXTENSIONS;
+.print UPDATE EXTENSIONS;
 
 .print ****************************************************************************
 .print FORCE INSTALL causes extension to be installed from .\local_extensions instead of internet
@@ -60,6 +60,11 @@ LOAD webbed;
 -- FORCE INSTALL shellfs from '.\local_extensions';
 install shellfs from community;
 load shellfs;
+
+-- FORCE INSTALL duckpgq from '.\local_extensions';
+install duckpgq from community;
+load duckpgq;
+
 
 -- RESULT:extension_name,loaded,installed,install_path,description,aliases,extension_version,install_mode,installed_from
 -- RESULT:core_functions,true,true,(BUILT-IN),Core function library,[],,STATICALLY_LINKED,
