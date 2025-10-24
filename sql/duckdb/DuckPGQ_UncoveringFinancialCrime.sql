@@ -2,16 +2,15 @@
 -- .timer on
 .conn duckdb
 
-.print *************************************************
-.print
-.print DuckDB and Graph Queries
-.print
-.print *************************************************
+-- https://duckdb.org/2025/10/22/duckdb-graph-queries-duckpgq
 
+-- RESULT:library_version,source_id,codename
+-- RESULT:v1.4.1,b390a7c376,Andium
 PRAGMA version;
 
--- remove database to start fresh
--- .system del /Q [[__DBFOLDER__]]\postgresql_sqlite_scanner.db > nul 2>&1
+-- RESULT:threads
+-- RESULT:6
+SELECT current_setting('threads') AS threads;
 
 .print *************************************************
 -- FORCE INSTALL duckpgq from '.\local_extensions';
@@ -44,6 +43,12 @@ EDGE TABLES (
         LABEL PersonOwn
 );
 
+-- RESULT:fromName,number_of_transactions,avg_amount,toName
+-- RESULT:Noe Trites,1,49365.04,Dale Croucher
+-- RESULT:Madeleine Bussing,1,46663.56,Delphine Primiano
+-- RESULT:Bonnie Centeno,1,46663.56,Maile Boon
+-- RESULT:Darci Sheedy,1,44856.02,Carmella Estelle
+-- RESULT:Marguerita Gurne,1,44393.68,Delphine Primiano
 SELECT
     fromName,
     count(amount) AS number_of_transactions,
@@ -58,8 +63,23 @@ FROM GRAPH_TABLE (finbench
 )
 GROUP BY ALL
 HAVING avg_amount < 50_000
-ORDER BY number_of_transactions DESC, avg_amount ASC
+ORDER BY number_of_transactions DESC, avg_amount DESC
 LIMIT 5;
+
+FROM GRAPH_TABLE(finbench
+    MATCH p = ANY SHORTEST
+                  (p:Person)-[o1:PersonOwn]->(a1:Account)
+                  -[t:Transfer]->+
+                  (a2:Account)<-[o2:PersonOwn]-(p:Person)
+WHERE
+    p.personId = 125 AND a1.accountId <> a2.accountId
+    COLUMNS (
+        path_length(p) AS path_length,
+        a1.accountId AS start_account,
+        a2.accountId AS end_account
+    )
+)
+ORDER BY path_length;
 
 DROP PROPERTY GRAPH finbench;
 

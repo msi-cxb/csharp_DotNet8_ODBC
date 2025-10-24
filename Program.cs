@@ -362,7 +362,7 @@ namespace csharpOdbcExample
                     {
                         stopwatch.Start();
                         OdbcDataReader reader = command.ExecuteReader();
-                        // Console.WriteLine($"    ExecuteReader:{reader.HasRows} {reader.FieldCount}");
+                        Console.WriteLine($"    ExecuteReader:{reader.HasRows} {reader.FieldCount}");
                         if (timer) { Console.WriteLine($"TIMER: {ToPrettyFormat(stopwatch.Elapsed)}"); }
 
                         string s = string.Empty;

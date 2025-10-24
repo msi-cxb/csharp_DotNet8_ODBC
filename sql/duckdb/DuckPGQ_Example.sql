@@ -2,16 +2,15 @@
 -- .timer on
 .conn duckdb
 
-.print *************************************************
-.print
-.print DuckDB and Graph Queries
-.print
-.print *************************************************
+-- https://duckdb.org/community_extensions/extensions/duckpgq
 
+-- RESULT:library_version,source_id,codename
+-- RESULT:v1.4.1,b390a7c376,Andium
 PRAGMA version;
 
--- remove database to start fresh
--- .system del /Q [[__DBFOLDER__]]\postgresql_sqlite_scanner.db > nul 2>&1
+-- RESULT:threads
+-- RESULT:6
+SELECT current_setting('threads') AS threads;
 
 .print *************************************************
 -- FORCE INSTALL duckpgq from '.\local_extensions';
