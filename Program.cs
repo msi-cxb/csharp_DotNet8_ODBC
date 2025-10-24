@@ -3,6 +3,7 @@ using System.Data;
 using System.Data.Odbc;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection.Metadata;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
@@ -185,6 +186,36 @@ namespace csharpOdbcExample
                             {
                                 System.Environment.Exit(1);
                             }
+                            else if (line.TrimStart().StartsWith(".output", StringComparison.OrdinalIgnoreCase))
+                            {
+                                // .output with nothing else turns off output to file
+                                if( line.Trim().Replace(".output", "").Length == 0 )
+                                {
+                                    //Console.WriteLine($"**********\n{o.sb.ToString()}\n**********");
+                                    if (o.sb.Length > 0) 
+                                    {
+                                        File.WriteAllText(o.outputFile, o.sb.ToString());
+                                    }
+                                    o.output = false;
+                                    o.outputFile = string.Empty;
+                                    o.outputHeader = false;
+                                    o.sb.Clear();
+                                }
+                                else
+                                {
+                                    // .output [filename] [include header true/false]
+                                    o.output = true;
+                                    o.sb.Clear();
+                                    string[] options = line.Trim().Replace(".output", "").Trim().Split(" ");
+                                    o.outputFile = Path.GetFullPath(options[0]);
+                                    o.outputHeader = bool.Parse(options[1]);
+                                    if (File.Exists(o.outputFile))
+                                    {
+                                        File.Delete(o.outputFile);
+                                    }
+                                }
+                                // Console.WriteLine($"file output {o.output} header {o.outputHeader} file [{o.outputFile}]");
+                            }
                             else if (line.TrimStart().StartsWith(".echo on", StringComparison.OrdinalIgnoreCase))
                             {
                                 o.echo = true;
@@ -261,6 +292,7 @@ namespace csharpOdbcExample
 
                                 o.Execute(sqlstr, executeQuery, expected);
                                 //o.Execute(sqlstr, !executeNonQuery, expected);
+
                                 expected = string.Empty;
                             }                        
                         }
@@ -298,9 +330,12 @@ namespace csharpOdbcExample
         public OdbcConnection connection = null;
         public Boolean echo = false;
         public Boolean timer = false;
+        public Boolean output = false;
+        public Boolean outputHeader = false;
+        public string outputFile = string.Empty;
+        public StringBuilder sb = new StringBuilder();
 
         public Int64 errorCount = 0;
-
 
         public Boolean GetConnectionString(string dbType, string dbPath)
         {
@@ -378,6 +413,7 @@ namespace csharpOdbcExample
                             }
                             Console.WriteLine($"RESULT:{s}");
                             result += s;
+                            if (outputHeader) { sb.AppendLine(s); }
 
                             while (reader.Read())
                             {
@@ -437,6 +473,7 @@ namespace csharpOdbcExample
                                 }
                                 Console.WriteLine($"RESULT:{s}");
                                 result += s;
+                                sb.AppendLine(s);
                             }
                         }
 
