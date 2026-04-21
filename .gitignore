@@ -421,3 +421,5 @@ data/spatial/Makefile
 .DS_Store
 *.xlsx
 *.sqlite3
+/data/metadata.ducklake
+/data/ducklake_data_files
