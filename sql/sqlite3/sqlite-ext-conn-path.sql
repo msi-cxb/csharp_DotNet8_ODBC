@@ -1,7 +1,5 @@
-.echo on
 -- .timer on
--- .conn sqlite3-path-fileio
-.conn sqlite3-path
+.conn sqlite3-path-fileio
 
 -- .print fileio is not currently working with sqlite3 >= 03.53.00
 -- .next
@@ -25,6 +23,8 @@
 DROP TABLE IF EXISTS timer;
 CREATE TABLE timer (task_name TEXT, note TEXT, ts_msec REAL);
 INSERT INTO timer VALUES('file', 'the start', unixepoch('now', 'subsec'));
+
+.echo on
 
 .print === path_dirname — extract directory component ===
 
@@ -54,16 +54,18 @@ SELECT * FROM path_parts('c:\foo\bar.txt');
 
 -- .print === fsdir — list files in c:\temp, group by extension ===
 
--- RESULT:path_extension(name),count(*),bar
--- RESULT:.txt,2,**
--- SELECT
-    -- path_extension(name),
-    -- count(*),
-    -- printf('%.*c', count(*), '*') AS bar
--- FROM fsdir('c:\temp')
--- WHERE path_extension(name) IS NOT NULL
--- GROUP BY 1
--- ORDER BY 2 DESC;
+-- RESULT:ext,cnt,bar
+-- RESULT:.sql,78,******************************************************************************
+SELECT
+    path_extension(name) as ext,
+    count(*) as cnt,
+    printf('%.*c', count(*), '*') AS bar
+FROM fsdir('./sql/sqlite3')
+WHERE path_extension(name) IS NOT NULL
+GROUP BY 1
+ORDER BY 2 DESC;
+
+.echo off
 
 INSERT INTO timer VALUES('file', 'the end', unixepoch('now', 'subsec'));
 

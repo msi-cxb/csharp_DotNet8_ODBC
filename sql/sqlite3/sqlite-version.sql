@@ -17,8 +17,6 @@ INSERT INTO timer VALUES('file', 'the start', unixepoch('now', 'subsec'));
 
 .print === SQLite version and source ID ===
 
--- RESULT:vers,srcId
--- RESULT:3.53.0,2026-04-09 11:41:38 4525003a53a7fc63ca75c59b22c79608659ca12f0131f52c18637f829977f20b
 SELECT sqlite_version() AS vers, sqlite_source_id() AS srcId;
 
 INSERT INTO timer VALUES('file', 'the end', unixepoch('now', 'subsec'));
