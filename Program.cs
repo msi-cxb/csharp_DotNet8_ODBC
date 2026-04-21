@@ -585,6 +585,7 @@ namespace csharpOdbcExample
                                     "analyze",
                                     "create property graph",
                                     "describe",
+                                    "execute",
                                     "explain",
                                     "from",
                                     "pragma",
