@@ -555,7 +555,17 @@ namespace csharpOdbcExample
                                 var delPath = line.TrimStart().Substring(".delete".Length).Trim();
                                 delPath = delPath.Replace("[[__DATAFOLDER__]]", dataFolder);
                                 delPath = delPath.Replace("[[__DBFOLDER__]]", dbFolder);
-                                if (File.Exists(delPath))
+                                if (delPath.Contains('*') || delPath.Contains('?'))
+                                {
+                                    var dir = Path.GetDirectoryName(delPath) ?? ".";
+                                    var pattern = Path.GetFileName(delPath);
+                                    foreach (var f in Directory.GetFiles(dir, pattern))
+                                    {
+                                        File.Delete(f);
+                                        logger.LogInformation("DELETE file: {FilePath}", f);
+                                    }
+                                }
+                                else if (File.Exists(delPath))
                                 {
                                     File.Delete(delPath);
                                     logger.LogInformation("DELETE file: {FilePath}", delPath);
