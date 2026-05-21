@@ -18,20 +18,30 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        id: checkout_code
+        id: checkout_code_1
+        with:
+          repository: msi-cxb/csharp_DotNet8_ODBC
+          path: './csharp_DotNet8_ODBC'
+            
+      - name: Checkout code
+        uses: actions/checkout@v4
+        id: checkout_code_2
+        with:
+          repository: msi-cxb/DatabaseLib
+          path: './DatabaseLib'
             
       - name: install SQLite ODBC
         id: install_sqlite_odbc
         shell: cmd
         run: |
-          cd sqliteODBC64
+          cd .\csharp_DotNet8_ODBC\sqliteODBC64
           .\SQLiteODBCInstaller.exe -q -i -d=sql3
 
       - name: install DuckDB ODBC
         id: install_duckdb_odbc
         shell: cmd
         run: |
-          cd duckdbODBC64
+          cd .\csharp_DotNet8_ODBC\duckdbODBC64
           .\odbc_install.exe /CI /Install
 
       - name: Setup MSBuild and add to PATH
@@ -41,18 +51,21 @@ jobs:
       - name: Run MSBuild
         id: run_msbuild
         run: |
-          msbuild .\csharp_DotNet8_ODBC.sln  /t:clean,build -restore /p:Configuration=Release
+          cd .\csharp_DotNet8_ODBC
+          msbuild .\csharp_DotNet8_ODBC.sln /p:PublishProfile="FolderProfile" /t:clean,restore,publish
 
       - name: Run with sqlite3
         id: run_sqlite_executable
         shell: powershell
         run: |
-          .\bin\Release\net8.0\csharp_DotNet8_ODBC.exe .\db .\db\test.sqlite3 .\data .\sql\sqlite3\datetime.sql
+          cd .\csharp_DotNet8_ODBC
+          .\bin\publish\csharp_DotNet8_ODBC.exe --sql .\sql\sqlite3\*version*.sql
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
 
       - name: Run with duckdb
         id: run_duckdb_executable
         shell: powershell
         run: |
-          .\bin\Release\net8.0\csharp_DotNet8_ODBC.exe .\db .\db\test.duckdb .\data .\sql\duckdb\datetime.sql 
+          cd .\csharp_DotNet8_ODBC
+          .\bin\publish\csharp_DotNet8_ODBC.exe --sql .\sql\duckdb\*version*.sql
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
