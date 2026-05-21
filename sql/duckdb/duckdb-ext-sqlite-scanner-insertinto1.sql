@@ -4,6 +4,8 @@
 
 .print use 100,000 individual insert into records via sqlite_scanner into big_table.sqlite3
 
+.delete [[__DATAFOLDER__]]\big_table.sqlite3
+
 -- FORCE INSTALL sqlite_scanner from '.\extensions\duckdb';
 INSTALL sqlite_scanner;
 LOAD sqlite_scanner;

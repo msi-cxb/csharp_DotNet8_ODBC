@@ -2,6 +2,8 @@
 -- .timer on
 .conn duckdb
 
+.delete [[__DATAFOLDER__]]\big_csv_2.csv
+
 -- 90 days of 10 Hz data --> ????? records
 
 .print create the big table

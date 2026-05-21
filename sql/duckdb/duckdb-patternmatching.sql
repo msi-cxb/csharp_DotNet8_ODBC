@@ -108,6 +108,4 @@ SELECT 'Best.txt' GLOB '[!a-zA-Z]est.txt';
 -- RESULT:false
 SELECT NOT 'best.txt' GLOB '*.txt';
 
--- RESULT:file
--- RESULT:csharp_DotNet8_ODBC.exe
-SELECT * FROM glob('csharp_DotNet8_ODBC.exe');
+SELECT * FROM glob('**/csharp_DotNet8_ODBC.exe');

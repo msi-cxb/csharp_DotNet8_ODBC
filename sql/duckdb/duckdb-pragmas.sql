@@ -8,9 +8,9 @@ CREATE OR REPLACE TABLE test AS
     SELECT *
     FROM (VALUES (1, 2), (3, 4)) AS t(a, b);
 
--- RESULT:seq,name,file
--- RESULT:592,test,test.duckdb
-SELECT seq, name, regexp_replace(file, '^.*[\\/]', '', 'g') as file
+-- RESULT:name,file
+-- RESULT:test,test.duckdb
+SELECT name, regexp_replace(file, '^.*[\\/]', '', 'g') as file
 FROM pragma_database_list
 WHERE file IS NOT NULL;
 

@@ -9,7 +9,7 @@ PRAGMA version;
 SELECT current_setting('threads');
 
 -- remove data.parquet to start fresh
-.system del /Q [[__DATAFOLDER__]]\data.parquet > nul 2>&1
+.delete [[__DATAFOLDER__]]\data.parquet > nul 2>&1
 
 .print install sqlite_scanner from local extensions repo (note these are signed copies from core)
 -- FORCE INSTALL sqlite_scanner from '.\extensions\duckdb';

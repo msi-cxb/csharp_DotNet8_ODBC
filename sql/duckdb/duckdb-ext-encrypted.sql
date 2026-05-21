@@ -26,20 +26,6 @@ ATTACH '[[__DBFOLDER__]]\tpch_encrypted.duckdb' AS encrypted (
 );
 USE encrypted;
 
-.print ================ dbgen
--- .timer on
--- CALL dbgen(sf = 1);
--- .timer off
-
--- ALTER TABLE lineitem
-    -- RENAME TO lineitem1;
--- CREATE OR REPLACE TABLE lineitem2 AS
-    -- FROM lineitem1;
--- CREATE OR REPLACE TABLE ans AS
-    -- SELECT l1.* , l2.*
-    -- FROM lineitem1 l1
-    -- JOIN lineitem2 l2 USING (l_orderkey , l_linenumber);
-
 -- RESULT:name
 -- RESULT:ans
 -- RESULT:customer
@@ -81,26 +67,7 @@ SHOW tables;
 -- RESULT:temp,false,false,null
 select database_name,readonly,encrypted,cipher FROM duckdb_databases();
 
--- .print ================ detach and remove databases
--- USE test.main;
-
--- DETACH encrypted;
--- DETACH unencrypted;
-
--- .delete [[__DBFOLDER__]]\tpch_encrypted.duckdb
--- .delete [[__DBFOLDER__]]\tpch_unencrypted.duckdb
-
 .print ================ show SUMMARIZE example...
-
--- .print ================ create tpch_unencrypted with dbgen
--- ATTACH '[[__DBFOLDER__]]\tpch_unencrypted.duckdb' AS unencrypted;
--- .timer on
--- CALL dbgen(sf = 1, catalog = 'unencrypted');
--- .timer off
-
--- .print ================ create tpch_encrypted by copying from tpch_unencrypted
--- ATTACH '[[__DBFOLDER__]]\tpch_encrypted.duckdb' AS encrypted (ENCRYPTION_KEY 'asdf');
--- COPY FROM DATABASE encrypted TO unencrypted;
 
 .print ================ set a very low memory limit to force more reading and writing from disk.
 SET memory_limit = '200MB';

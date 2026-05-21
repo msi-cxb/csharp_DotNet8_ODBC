@@ -5,6 +5,8 @@
 .print dbfolder [[__DBFOLDER__]]
 .print datafolder [[__DATAFOLDER__]]
 
+.delete [[__DBFOLDER__]]\basicFeatureEngineering.db
+
 -- https://duckdb.org/2025/08/15/ml-data-preprocessing.html
 -- TL;DR: In this post, we show how to perform essential machine learning data preprocessing tasks, 
 -- like missing value imputation, categorical encoding, and feature scaling, directly in DuckDB 

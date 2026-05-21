@@ -2,6 +2,9 @@
 -- .timer on
 .conn duckdb
 
+.delete [[__DATAFOLDER__]]\company.parquet
+.delete [[__DATAFOLDER__]]\company.csv
+
 drop table if exists company;
 
 CREATE TABLE COMPANY(

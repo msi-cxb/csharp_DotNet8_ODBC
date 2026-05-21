@@ -9,7 +9,6 @@ PRAGMA version;
 SELECT current_setting('threads');
 
 -- remove data.parquet to start fresh
-.delete [[__DATAFOLDER__]]\flights*.csv
 .delete [[__DATAFOLDER__]]\flights
 
 -- get the sample data from https://duckdb.org/data/flights.csv

@@ -2,6 +2,8 @@
 -- .timer on
 .conn duckdb
 
+.delete [[__DATAFOLDER__]]\flights*.csv
+
 PRAGMA version;
 
 -- RESULT:current_setting('threads')
@@ -9,10 +11,7 @@ PRAGMA version;
 SELECT current_setting('threads');
 
 -- remove data.parquet to start fresh
-.system del /Q [[__DATAFOLDER__]]\flights*.csv > nul 2>&1
--- .system del /Q [[__DATAFOLDER__]]\large_table_sqlite.parquet > nul 2>&1
-
--- .quit
+.delete [[__DATAFOLDER__]]\flights*.csv
 
 -- get the sample data from https://duckdb.org/data/flights.csv
 CREATE OR REPLACE TABLE flights AS FROM 'https://duckdb.org/data/flights.csv';

@@ -1,15 +1,15 @@
--- .echo on
+.echo on
 -- .timer on
 .conn duckdb
 
 -- cleanup any previous files
-delete "[[__DATAFOLDER__]]\test.xlsx"
+.delete [[__DATAFOLDER__]]\test.xlsx
 
 .print duckdb excel
 -- As of DuckDB 1.2 also provides functionality to read and write Excel (.xlsx) files.
 
-FORCE INSTALL excel from '.\extensions\duckdb';
--- INSTALL excel;
+-- FORCE INSTALL excel from '.\extensions\duckdb';
+INSTALL excel;
 LOAD excel;
 
 -- excel scalar functions

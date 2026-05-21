@@ -9,7 +9,7 @@ PRAGMA version;
 SELECT current_setting('threads');
 
 -- remove database to start fresh
-.delete[[__DATAFOLDER__]]\new_sqlite_database.*
+.delete [[__DATAFOLDER__]]\new_sqlite_database.*
 
 .print install sqlite_scanner from local extensions repo (note these are signed copies from core)
 -- FORCE INSTALL sqlite_scanner from '.\extensions\duckdb';

@@ -9,7 +9,7 @@
 .print datafolder [[__DATAFOLDER__]]
 
 -- remove database to start fresh
-.delete [[__DATAFOLDER__]]\joined.geojsonseq > nul 2>&1
+.delete [[__DATAFOLDER__]]\joined.geojsonseq
 
 -- FORCE INSTALL spatial from '.\extensions\duckdb';
 INSTALL spatial;

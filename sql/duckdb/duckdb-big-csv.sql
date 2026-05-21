@@ -2,8 +2,7 @@
 -- .timer on
 .conn duckdb
 
-.print dbfolder [[__DBFOLDER__]]
-.print datafolder [[__DATAFOLDER__]]
+.delete [[__DATAFOLDER__]]\big_company.csv
 
 -- 5000 x 5000 --> 25,000,000 rows
 
