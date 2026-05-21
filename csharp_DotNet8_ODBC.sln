@@ -4,6 +4,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csharp_DotNet8_ODBC", "csharp_DotNet8_ODBC.csproj", "{3C1EF3D2-B15A-477D-B787-1E5B7192FE3B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9454A6FF-2476-661B-0BA9-B65CD40028F6} = {9454A6FF-2476-661B-0BA9-B65CD40028F6}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseLib", "..\DatabaseLib\DatabaseLib\src\DatabaseLib\DatabaseLib.csproj", "{9454A6FF-2476-661B-0BA9-B65CD40028F6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +26,14 @@ Global
 		{3C1EF3D2-B15A-477D-B787-1E5B7192FE3B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3C1EF3D2-B15A-477D-B787-1E5B7192FE3B}.Release|x64.ActiveCfg = Release|x64
 		{3C1EF3D2-B15A-477D-B787-1E5B7192FE3B}.Release|x64.Build.0 = Release|x64
+		{9454A6FF-2476-661B-0BA9-B65CD40028F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9454A6FF-2476-661B-0BA9-B65CD40028F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9454A6FF-2476-661B-0BA9-B65CD40028F6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9454A6FF-2476-661B-0BA9-B65CD40028F6}.Debug|x64.Build.0 = Debug|Any CPU
+		{9454A6FF-2476-661B-0BA9-B65CD40028F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9454A6FF-2476-661B-0BA9-B65CD40028F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9454A6FF-2476-661B-0BA9-B65CD40028F6}.Release|x64.ActiveCfg = Release|Any CPU
+		{9454A6FF-2476-661B-0BA9-B65CD40028F6}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
