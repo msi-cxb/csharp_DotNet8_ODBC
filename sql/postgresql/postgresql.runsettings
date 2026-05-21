@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <RunConfiguration>
+    <EnvironmentVariables>
+      <POSTGRES_CONN_STR>Host=192.168.127.239;Port=5432;Database=postgres;Username=postgres;Password=postgres;</POSTGRES_CONN_STR>
+    </EnvironmentVariables>
+  </RunConfiguration>
+</RunSettings>
