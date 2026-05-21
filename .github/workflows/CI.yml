@@ -16,14 +16,14 @@ jobs:
     name: Run MSBuild and VSTest
     
     steps:
-      - name: Checkout code
+      - name: Checkout csharp_DotNet8_ODBC
         uses: actions/checkout@v4
         id: checkout_code_1
         with:
           repository: msi-cxb/csharp_DotNet8_ODBC
           path: './csharp_DotNet8_ODBC'
             
-      - name: Checkout code
+      - name: Checkout DatabaseLib
         uses: actions/checkout@v4
         id: checkout_code_2
         with:
@@ -50,9 +50,11 @@ jobs:
               
       - name: Run MSBuild
         id: run_msbuild
+        shell: cmd
         run: |
           cd .\csharp_DotNet8_ODBC
           msbuild .\csharp_DotNet8_ODBC.sln /p:PublishProfile="FolderProfile" /t:clean,restore,publish
+          dir /s /b .\bin\publish
 
       - name: Run with sqlite3
         id: run_sqlite_executable
