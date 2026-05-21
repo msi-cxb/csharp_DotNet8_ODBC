@@ -54,7 +54,7 @@ jobs:
         run: |
           cd .\csharp_DotNet8_ODBC
           msbuild .\csharp_DotNet8_ODBC.sln /p:PublishProfile="FolderProfile" /t:clean,restore,publish
-          dir /s /b .\bin\publish
+          dir /s /b .\*.exe
 
       - name: Run with sqlite3
         id: run_sqlite_executable
