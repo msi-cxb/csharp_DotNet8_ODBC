@@ -11,6 +11,8 @@ on:
 jobs:
   run-selected-unittests:
     runs-on: windows-latest
+    permissions:
+      contents: write
     env:
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
     name: Run MSBuild and VSTest
