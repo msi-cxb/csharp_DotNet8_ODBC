@@ -82,7 +82,7 @@ jobs:
           echo cache-${{ github.run_id }}-${{ github.run_attempt }} >> Release.txt
           xcopy /Q /Y Release.txt csharp_DotNet8_ODBC\bin\publish 1>nul
           7z a csharp_DotNet8_ODBC.zip .\csharp_DotNet8_ODBC\bin\publish
-          dir /s /b install
+          dir /s /b csharp_DotNet8_ODBC
           
       - name: cache
         uses: actions/cache/save@v4
