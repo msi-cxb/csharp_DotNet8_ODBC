@@ -73,3 +73,17 @@ jobs:
           cd .\csharp_DotNet8_ODBC
           .\bin\publish\csharp_DotNet8_ODBC.exe --sql .\sql\duckdb\*version*.sql
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      
+      - name: cache
+        uses: actions/cache/save@v4
+        with:
+          path: .\csharp_DotNet8_ODBC\bin\publish
+          key: cache-${{ github.run_id }}-${{ github.run_attempt }}
+          enableCrossOsArchive: true
+
+      - name: release
+        id: release
+        uses: ncipollo/release-action@v1
+        with:
+          replacesArtifacts: true
+          artifacts: "csharp_DotNet8_ODBC.zip"
