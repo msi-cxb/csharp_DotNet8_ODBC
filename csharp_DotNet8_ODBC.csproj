@@ -29,7 +29,16 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="echo robocopy /MIR &quot;$(ProjectDir)sql&quot; &quot;$(TargetDir)sql&quot;&#xD;&#xA;robocopy /MIR &quot;$(ProjectDir)sql&quot; &quot;$(TargetDir)sql&quot; &gt;nul 2&gt;&amp;1&#xD;&#xA;exit 0" />
+	  <!-- 1. Define a variable that switches based on whether you are Building or Publishing -->
+	  <PropertyGroup>
+		  <CurrentOutputFolder>$(TargetDir)</CurrentOutputFolder>
+		  <CurrentOutputFolder Condition="'$(PublishDir)' != ''">$(PublishDir)</CurrentOutputFolder>
+	  </PropertyGroup>
+
+	  <!-- 2. Pass that variable into your script or command -->
+	  <Message Text="--- Post Build Event Output Path: $(CurrentOutputFolder) ---" Importance="high" />
+
+	  <Exec Command="echo robocopy /MIR &quot;$(ProjectDir)sql&quot; &quot;$(CurrentOutputFolder)\sql&quot;&#xD;&#xA;robocopy /MIR &quot;$(ProjectDir)sql&quot; &quot;$(CurrentOutputFolder)\sql&quot; &gt;nul 2&gt;&amp;1&#xD;&#xA;robocopy /MIR &quot;$(ProjectDir)data&quot; &quot;$(CurrentOutputFolder)\data&quot; &gt;nul 2&gt;&amp;1&#xD;&#xA;    exit 0" />
   </Target>
 
 </Project>
